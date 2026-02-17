@@ -8,7 +8,7 @@ import 'nprogress/nprogress.css'
 export interface ApiResponse<T = any>{
     code: number,
     msg: string,
-    data?: T,
+    data: T,
 }
 
 export interface ApiErrorResponse {
