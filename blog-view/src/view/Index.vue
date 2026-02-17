@@ -114,7 +114,7 @@ const fetchTags = async () => {
   try {
     const response: ApiResponse<Tag[]> = await getTags()
     if(response.code === 200){
-      tags.value = response.data
+      tags.value = response.data ?? []
       console.log(tags.value)
     }
   }catch (err: any){
