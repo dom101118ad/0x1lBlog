@@ -17,7 +17,7 @@ export interface ApiErrorResponse {
     status: number;
     path: string;
     traceId: string;
-    timestamp: Date;
+    timestamp: string;
     details?: Record<string, any>;
 }
 
@@ -35,7 +35,7 @@ export interface PageInfo<T = any> {
 }
 
 export const request: AxiosInstance = axios.create({
-    baseURL: 'http://localhost:8090/',
+    baseURL: 'http://localhost:8090/admin/',
     timeout: 10000,
     withCredentials: true
 })
@@ -43,6 +43,13 @@ export const request: AxiosInstance = axios.create({
 request.interceptors.request.use(
     (config: InternalAxiosRequestConfig): InternalAxiosRequestConfig => {
         NProgress.start()
+        const token = window.sessionStorage.getItem('token')
+        if (token) {
+            config.headers.Authorization = `Bearer ${token}`
+        }
+        const tradeId = crypto.randomUUID();
+        config.headers["X-Trace-Id"] = tradeId;
+        (config as any).tradeId = tradeId
         return config
     }
 )

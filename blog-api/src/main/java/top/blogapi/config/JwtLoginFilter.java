@@ -11,11 +11,13 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+import top.blogapi.exception.ApiErrorResponse;
 import top.blogapi.model.vo.Result;
 import top.blogapi.model.entity.User;
 
 import javax.crypto.SecretKey;
 import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -98,11 +100,19 @@ public class JwtLoginFilter extends UsernamePasswordAuthenticationFilter {
                                          AuthenticationException exception) throws java.io.IOException {
 
         String errorMessage = getErrorMessage(exception);
-        Result<Map<String, Object>> result = Result.create(401, errorMessage);
+        ApiErrorResponse error = new ApiErrorResponse(
+                "UNAUTHORIZED",
+                errorMessage,
+                401,
+                request.getRequestURI(),
+                request.getHeader("X-Trace-Id"),
+                LocalDateTime.now(),
+                Map.of("reason",errorMessage)
+        );
 
-        response.setStatus(401);
+        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         response.setContentType("application/json;charset=UTF-8");
-        objectMapper.writeValue(response.getWriter(), result);
+        objectMapper.writeValue(response.getWriter(),error);
     }
 
     private String getErrorMessage(AuthenticationException exception) {

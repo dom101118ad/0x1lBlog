@@ -50,11 +50,12 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { ref, reactive, getCurrentInstance } from 'vue'
 import { useRouter } from 'vue-router'
 import { login } from '@/network/login'
 import {User} from "@element-plus/icons-vue";
+import {handleAxiosError} from "@/plugins/apiErrorHandler";
 
 const router = useRouter()
 
@@ -112,15 +113,14 @@ const handleLogin = async () => {
       sessionStorage.setItem('token', res.data.token)
 
       // Navigate to dashboard
-      router.push('/home')
+      await router.push('/home')
     } else {
-
       proxy.$msgError(res.msg)
     }
   } catch (error) {
-    console.error('Login error:', error)
-
-    proxy.$msgError(error.response?.data?.msg || 'Yêu cầu thất bại')
+    const apiError = handleAxiosError(error);
+    console.log(apiError);
+    proxy.$msgError(apiError.message|| 'Yêu cầu thất bại')
   } finally {
     loading.value = false
   }

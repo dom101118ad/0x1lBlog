@@ -14,7 +14,9 @@
       <!-- Sidebar -->
       <el-aside :width="isCollapse ? '64px' : '200px'">
         <div class="toggle-button" @click="toggleCollapse">
-          <i :class="isCollapse ? 'el-icon-s-unfold' : 'el-icon-s-fold'"></i>
+          <el-icon>
+            <component :is="isCollapse ? Expand : Fold" />
+          </el-icon>
         </div>
 
 
@@ -63,7 +65,7 @@
       </el-aside>
 
       <!-- Right Content Area -->
-      <el-main>
+      <el-main :class="isCollapse?'m-el-main-width-64':'m-el-main-width-190'">
         <router-view :key="route.fullPath"/>
       </el-main>
 
@@ -183,7 +185,7 @@ import {
   Delete,
   TrendCharts,
   View,
-  Document
+  Document, Expand, Fold
 } from '@element-plus/icons-vue'
 
 import {defineAsyncComponent} from "vue";
@@ -246,8 +248,10 @@ const toggleCollapse = () => {
 }
 
 .el-aside{
-
   background-color: #353d78;
+  position: absolute;
+  top: 60px;
+  bottom: 0;
 }
 
 .el-aside .el-menu{
@@ -256,6 +260,19 @@ const toggleCollapse = () => {
 
 .el-main{
   background-color: #ffffff;
+  position: absolute;
+  top: 60px;
+  bottom: 0;
+  right: 0;
+  overflow-y: auto;
+}
+
+.m-el-main-width-190 {
+  width: calc(100% - 200px);
+}
+
+.m-el-main-width-64 {
+  width: calc(100% - 64px);
 }
 
 .iconfont{

@@ -13,10 +13,13 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
+import top.blogapi.exception.ApiErrorResponse;
 import top.blogapi.model.vo.Result;
 
 import javax.crypto.SecretKey;
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.util.Map;
 
 public class JwtFilter extends OncePerRequestFilter {
     private final SecretKey secretKey;
@@ -48,17 +51,26 @@ public class JwtFilter extends OncePerRequestFilter {
                 context.setAuthentication(authentication);
                 SecurityContextHolder.setContext(context);
             }catch (Exception e) {
-                handleAuthenticationError(response,"Thông tin đăng nhập đã hết hạn, vui lòng đăng nhập lại!",403);
+                handleAuthenticationError(response, request,
+                        "Thông tin đăng nhập đã hết hạn, vui lòng đăng nhập lại!",403);
                 return;
             }
         }
         filterChain.doFilter(request, response);
     }
-    private void handleAuthenticationError(HttpServletResponse response, String message, int status) throws IOException {
+    private void handleAuthenticationError(HttpServletResponse response,HttpServletRequest request,
+                                           String message, int status) throws IOException {
         response.setStatus(status);
         response.setContentType("application/json;charset=utf-8");
-
-        Result<?> result = Result.create(status, message);
-        objectMapper.writeValue(response.getWriter(), result);
+        ApiErrorResponse error = new ApiErrorResponse(
+                "UNAUTHORIZED",
+                message,
+                status,
+                request.getRequestURI(),
+                request.getHeader("X-Trace-Id"),
+                LocalDateTime.now(),
+                Map.of("reason",message)
+        );
+        objectMapper.writeValue(response.getWriter(), error);
     }
 }
