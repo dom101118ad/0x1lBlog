@@ -10,8 +10,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import top.blogapi.dto.request.comment.CommentUpdateRequest;
 import top.blogapi.dto.response.comment.CommentByBlogIdResponse;
-import top.blogapi.exception.business_exception.BusinessException;
-import top.blogapi.exception.system_exception.SystemException;
+import top.blogapi.exception.AppException;
+import top.blogapi.exception.ErrorCode;
 import top.blogapi.mapper.CommentMapper;
 import top.blogapi.model.entity.Comment;
 import top.blogapi.model.vo.CommentTree;
@@ -50,43 +50,29 @@ public class CommentServiceImpl implements CommentService {
     @Override
     public void updateCommentPublishedById(Long id, boolean published) {
          if(commentRepository.updateCommentPublishedById(id,published)==0)
-                throw SystemException.builder()
-                        .message("Thao tác thất bại!!")
-                        .operate("update")
-                        .build();
+             throw new AppException(ErrorCode.COMMENT_NOT_FOUND);
 
     }
     @Transactional
     @Override
     public void updateCommentNoticeById(Long id, boolean notice) {
         if(commentRepository.updateCommentNoticeById(id, notice)==0)
-            throw SystemException.builder()
-                    .message("Thao tác thất bại!!")
-                    .operate("update")
-                    .build();
+            throw new AppException(ErrorCode.COMMENT_NOT_FOUND);
     }
     @Transactional
     @Override
     public void deleteCommentById(Long id) {
         if(commentRepository.deleteCommentById(id) == 0)
-            throw SystemException.builder()
-                    .message("Xóa comment thất baại!!")
-                    .context("commentId",id)
-                    .build();
+            throw new AppException(ErrorCode.COMMENT_NOT_FOUND);
     }
     @Transactional
     @Override
     public void updateComment(CommentUpdateRequest request) {
         if(StringUtils.isEmpty(request.getContent(), request.getIp(), request.getEmail(), request.getNickname()))
-            throw BusinessException.builder()
-                    .message("Thông tin không hợp lệ")
-                    .build();
+            throw new AppException(ErrorCode.INVALID_INPUT);
         if(commentRepository.updateComment(request.getId(), request.getNickname(),
                 request.getEmail(), request.getContent(), request.getIp())==0)
-            throw SystemException.builder()
-                    .message("Chỉnh sửa comment thất baại!!")
-                    .context("commentId",request.getId())
-                    .build();
+            throw new AppException(ErrorCode.COMMENT_NOT_FOUND);
     }
 
     @SuppressWarnings("resource")
@@ -107,5 +93,13 @@ public class CommentServiceImpl implements CommentService {
                     key -> new LinkedList<>())
                     .add(commentMapper.toCommentNode(commentChildTrees.get(i)));
         return map;
+    }
+
+    @Override
+    public Long saveComment(Comment comment) {
+        int r = commentRepository.saveComment(comment);
+        if(r == 0)
+            throw new AppException(ErrorCode.INTERNAL_ERROR,"Viết bình luận không thành công");
+        return comment.getId();
     }
 }

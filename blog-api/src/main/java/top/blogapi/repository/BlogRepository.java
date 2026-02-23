@@ -102,7 +102,7 @@ public interface BlogRepository {
             </script>
 
             """)
-    void saveBlogTag(Long blogId, List<Long> tagIds);
+    int saveBlogTag(Long blogId, List<Long> tagIds);
 
     @Update("UPDATE blog SET is_top = #{top} WHERE id = #{id}")
     int updateBlogTopById(@Param("id") Long id, @Param("top") boolean top);

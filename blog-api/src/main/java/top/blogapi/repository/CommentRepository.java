@@ -154,4 +154,38 @@ public interface CommentRepository {
             @Result(property = "adminComment" , column = "is_admin_comment")
     })
     List<CommentTree> findRepliesByRootIds(List<Long> rootIds);
+
+    @Insert("""
+        INSERT INTO comment (
+            nickname,
+            email,
+            content,
+            avatar,
+            create_time,
+            website,
+            ip,
+            is_published,
+            is_admin_comment,
+            page,
+            is_notice,
+            parent_comment_id,
+            blog_id
+        )values(
+            #{nickname},
+            #{email},
+            #{content},
+            #{avatar},
+            #{createTime},
+            #{website},
+            #{ip},
+            #{published},
+            #{adminComment},
+             #{page},
+            #{notice},
+            #{parentCommentId},
+            #{blog.id}
+        ) 
+""")
+    @Options(useGeneratedKeys = true, keyProperty = "id")
+    int saveComment (Comment comment);
 }

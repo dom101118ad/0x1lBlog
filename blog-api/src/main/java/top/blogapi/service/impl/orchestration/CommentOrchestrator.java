@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import top.blogapi.dto.request.comment.CommentQueryRequest;
 import top.blogapi.dto.request.comment.CommentUpdateRequest;
+import top.blogapi.dto.request.comment.SaveCommentReq;
 import top.blogapi.dto.response.comment.CommentByBlogIdResponse;
 import top.blogapi.mapper.CommentMapper;
 import top.blogapi.model.entity.Comment;
@@ -87,4 +88,14 @@ public class CommentOrchestrator {
         }
         return false;
     }
+
+//    public void saveComment(SaveCommentReq req){
+//        if(StringUtils.isEmpty(req.getContent(), req.getEmail(), req.getWebsite(), req.getNickname())
+//                || req.getNickname().length() > 15 || req.getContent().length() > 250){
+//            throw BusinessException.builder()
+//                    .message("Thông số không chính xác")
+//                    .build();
+//        }
+//        commentService.saveComment(req);
+//    }
 }

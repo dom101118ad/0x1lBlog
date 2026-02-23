@@ -7,6 +7,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import top.blogapi.exception.AppException;
+import top.blogapi.exception.ErrorCode;
 import top.blogapi.model.entity.User;
 import top.blogapi.repository.UserRepository;
 
@@ -16,10 +18,10 @@ import top.blogapi.repository.UserRepository;
 public class UserServiceImpl implements UserDetailsService {
     UserRepository userRepository;
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+    public UserDetails loadUserByUsername(String username)  {
         User user = userRepository.findByUserName(username);
         if (user == null) {
-            throw new UsernameNotFoundException("Người dùng không tồn tại!");
+            throw new AppException(ErrorCode.USER_NOT_FOUND,"Người dùng không tồn tại!");
         }
         return user;
     }

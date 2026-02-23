@@ -29,14 +29,16 @@ public class CategoryAdminController {
 
     @PostMapping("/categories")
     public Result<?> addCategory(@RequestParam(value = "name", required = true) String name) {
-        return Result.ok(categoryOrchestrator.createCategory(name));
+        categoryOrchestrator.createCategory(name);
+        return Result.ok("Thêm thể loại thành công [ "+ name +" ]" );
     }
 
 
     @PutMapping("/category/{id}")
     public Result<?> updateCategoryById(@PathVariable Long id,
                                         @RequestParam(value = "name", required = true) String name) {
-        return Result.ok(categoryOrchestrator.updateCategory(id, name));
+        categoryOrchestrator.updateCategory(id, name);
+        return Result.ok("Cập nhật thể loại thành công !!");
     }
 
 }

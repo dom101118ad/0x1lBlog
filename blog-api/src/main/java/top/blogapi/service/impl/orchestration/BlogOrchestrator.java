@@ -17,8 +17,8 @@ import top.blogapi.dto.response.blog.ArchiveBlogResponse;
 import top.blogapi.dto.response.blog.BlogSummaryResponse;
 import top.blogapi.dto.response.category.CategoryResponse;
 import top.blogapi.dto.response._page.BlogListPageResponse;
-import top.blogapi.exception.business_exception.BusinessException;
-import top.blogapi.exception.system_exception.SystemException;
+import top.blogapi.exception.AppException;
+import top.blogapi.exception.ErrorCode;
 import top.blogapi.model.entity.*;
 import top.blogapi.mapper.BlogMapper;
 import top.blogapi.mapper.CategoryMapper;
@@ -69,18 +69,9 @@ public class BlogOrchestrator {
 
     private void validateBlogQuery(BlogQueryRequest request) {
         if (request.getPageNum() <= 0)
-            throw BusinessException.builder()
-                    .validate()
-                    .message("Không thể chọn trang nhỏ hơn 1")
-                    .context("providedPage", request.getPageNum())
-                    .build();
+            throw new AppException(ErrorCode.INVALID_INPUT,"Không thể chọn trang nhỏ hơn 1");
         if (request.getQuery() != null && request.getQuery().length() > 100)
-            throw BusinessException.builder()
-                    .validate()
-                    .message("Độ dài vượt quá yêu cầu")
-                    .context("length", 100)
-                    .context("actualLength", request.getQuery().length())
-                    .build();
+            throw new AppException(ErrorCode.INVALID_INPUT,"Độ dài vượt quá yêu cầu");
     }
 
     public String getResult(Map<String, Object> map, String type) {
@@ -96,19 +87,12 @@ public class BlogOrchestrator {
 //                    , blog.getFlag()
         )
                 || blog.getWords() == null || blog.getWords() < 0) {
-            throw BusinessException.builder()
-                    .validate()
-                    .message("Các thông tin không được để trống")
-                    .build();
+            throw new AppException(ErrorCode.INVALID_INPUT,"Các thông tin không được để trống");
         }
         // Xử lý thể loại(category)
         Object cate = blogMap.get("cate");
         if (cate == null)
-            throw BusinessException.builder()
-                    .validate()
-                    .message("Thể loại không được để trống")
-                    .build();
-
+            throw new AppException(ErrorCode.INVALID_INPUT,"Thể loại không được để trống");
 
         if (cate instanceof Integer) { // Chọn danh mục hiện có
             Category category = categoryService.getCategoryById(((Integer) cate).longValue());
@@ -119,10 +103,7 @@ public class BlogOrchestrator {
                 blog.setCategory(category); // Thêm thể loại thành công
             }
         } else
-            throw SystemException.builder()
-                    .operate("insert")
-                    .message("Lỗi thêm thể loại")
-                    .build();
+            throw new AppException(ErrorCode.INTERNAL_ERROR,"Lỗi thêm thể loại");
         // Xử lý tags
         List<Object> tagList = (List<Object>) blogMap.get("tagList");
         List<Tag> tags = new ArrayList<>();
@@ -138,16 +119,10 @@ public class BlogOrchestrator {
                     if (tag.getId() != null) // Thêm tag thành công
                         tags.add(tag);
                     else
-                        throw SystemException.builder()
-                                .message("Thêm tag không thành công")
-                                .operate("insert")
-                                .build();
+                        throw new AppException(ErrorCode.INTERNAL_ERROR,"Thêm tag không thành công");
                 }
             } else
-                throw BusinessException.builder()
-                        .validate()
-                        .message("Tên Tag không chính xác")
-                        .build();
+                throw new AppException(ErrorCode.INVALID_INPUT,"Tên Tag không chính xác");
         }
 
         if (blog.getReadTime() == null || blog.getReadTime() < 0)

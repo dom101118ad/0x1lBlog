@@ -9,8 +9,8 @@ import lombok.experimental.FieldDefaults;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import top.blogapi.dto.request.category.CategoryQueryRequest;
-import top.blogapi.exception.business_exception.BusinessException;
-import top.blogapi.exception.system_exception.SystemException;
+import top.blogapi.exception.AppException;
+import top.blogapi.exception.ErrorCode;
 import top.blogapi.model.entity.Category;
 import top.blogapi.repository.CategoryRepository;
 import top.blogapi.service.CategoryService;
@@ -41,9 +41,7 @@ public class CategoryServiceImpl implements CategoryService {
     public Category saveCategory(String categoryName) {
         Category c = new Category(categoryName);
         if(categoryRepository.saveCategory(c)==0)
-            throw SystemException.builder()
-                    .message("Không thể thêm thể loại!")
-                    .build();
+            throw new AppException(ErrorCode.INTERNAL_ERROR,"Thêm thể loại không thành công !!");
         return c;
     }
 
@@ -51,23 +49,14 @@ public class CategoryServiceImpl implements CategoryService {
     public Category getCategoryById(Long id) {
         return categoryRepository.getCategoryById(id)
                 .orElseThrow(() ->
-                        BusinessException.builder()
-                                .notFound("CATEGORY")
-                                .message("Thể loại này không tồn tại")
-                                .context("categoryId", id)
-                                .build());
+                        new AppException(ErrorCode.COMMENT_NOT_FOUND,"Thêm thể loại không thành công !!"));
     }
 
     @Override
     public Category getCategoryByName(String name) {
         return categoryRepository.getCategoryByName(name)
                 .orElseThrow(() ->
-                        BusinessException.builder()
-                                .notFound("CATEGORY")
-                                .message("Thể loại này không tồn tại")
-                                .context("categoryName", name)
-                                .build()
-                );
+                        new AppException(ErrorCode.COMMENT_NOT_FOUND,"Không tồn tại thể loại "+ name));
     }
 
     @Override
@@ -78,20 +67,12 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public void deleteCategoryById(Long id) {
         if(categoryRepository.deleteCategoryById(id)==0)
-            throw BusinessException.builder()
-                    .notFound("CATEGORY")
-                    .message("Thể loại này không tồn tại")
-                    .context("categoryId", id)
-                    .build();
+            throw new AppException(ErrorCode.COMMENT_NOT_FOUND);
     }
 
     @Override
     public void updateCategory(Category category) {
         if( categoryRepository.updateCategory(category)==0)
-            throw BusinessException.builder()
-                    .notFound("CATEGORY")
-                    .message("Thể loại này không tồn tại")
-                    .context("categoryId", category.getId())
-                    .build();
+            throw new AppException(ErrorCode.COMMENT_NOT_FOUND,"Thể loại này không tồn tại");
     }
 }

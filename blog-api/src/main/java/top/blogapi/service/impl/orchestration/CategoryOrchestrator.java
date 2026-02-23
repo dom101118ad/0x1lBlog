@@ -46,15 +46,13 @@ public class CategoryOrchestrator {
 //                    .build();
     }
 
-    public String createCategory(String name) {
+    public void createCategory(String name) {
         categoryService.saveCategory(name);
-        return "Thêm thể loại thành công [ "+ name +" ]" ;
     }
 
-    public String updateCategory(Long id, String name) {
+    public void updateCategory(Long id, String name) {
         Category category = categoryService.getCategoryById(id);
         category.setName(name);
         categoryService.updateCategory(category);
-        return "Cập nhật thể loại thành công !!";
     }
 }

@@ -25,16 +25,19 @@ public class TagAdminController {
 
     @PostMapping("/tag")
     public Result<?> createTag(@RequestBody CreateTagRequest request) {
-        return Result.ok(tagOrchestrator.createTag(request));
+        tagOrchestrator.createTag(request);
+        return Result.ok("Tạo Tag thành công !!");
     }
 
     @PutMapping("/tag")
     public Result<?> updateTag(@RequestBody UpdateTagRequest request){
-        return Result.ok(tagOrchestrator.updateTag(request));
+        tagOrchestrator.updateTag(request);
+        return Result.ok("Cập nhật tag thành công!!");
     }
 
     @DeleteMapping("/tag/{id}")
     public Result<?> deleteTag(@PathVariable Long id){
-        return Result.ok(tagOrchestrator.deleteTagById(id));
+        tagOrchestrator.deleteTagById(id);
+        return Result.ok("Xóa tag thành công!!");
     }
 }

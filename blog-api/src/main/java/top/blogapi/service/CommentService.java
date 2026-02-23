@@ -23,4 +23,6 @@ public interface CommentService {
     PageInfo<CommentByBlogIdResponse.CommentNode> commentRootTrees (int pageNum, int pageSize, Long blogId, Integer page);
 
     Map<Long, List<CommentByBlogIdResponse.CommentNode>> commentChildTrees(List<Long> commentRootIds);
+
+    Long saveComment(Comment comment);
 }

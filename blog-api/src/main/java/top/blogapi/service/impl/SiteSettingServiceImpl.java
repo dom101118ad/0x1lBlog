@@ -5,8 +5,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import top.blogapi.exception.system_exception.SystemException;
-import top.blogapi.model.TypeSetting;
+import top.blogapi.exception.AppException;
+import top.blogapi.exception.ErrorCode;
 import top.blogapi.model.entity.SiteSetting;
 import top.blogapi.repository.SiteSettingRepository;
 import top.blogapi.service.SiteSettingService;
@@ -32,31 +32,21 @@ public class SiteSettingServiceImpl implements SiteSettingService {
     @Override
     public void updateSiteSetting(SiteSetting siteSetting) {
         if(siteSettingRepository.updateSiteSetting(siteSetting) == 0)
-            throw SystemException.builder()
-                    .message("Thây đổi thiết lập thất bại")
-                    .context("siteSettingId", siteSetting.getId())
-                    .build();
+            throw new AppException(ErrorCode.SITE_SETTINGS_NOT_FOUND);
     }
 
     @Transactional
     @Override
     public void deleteSettingById(Long id) {
         if(siteSettingRepository.deleteSettingById(id)==0)
-            throw SystemException.builder()
-                    .message("Xóa thiết lập thất bại")
-                    .context("siteSettingId", id)
-                    .build();
+            throw new AppException(ErrorCode.SITE_SETTINGS_NOT_FOUND);
     }
 
     @Transactional
     @Override
     public void saveSiteSetting(SiteSetting siteSetting) {
         if(siteSettingRepository.saveSiteSetting(siteSetting) == 0)
-            throw SystemException.builder()
-                    .message("Cập nhật thiết lập thất bại")
-                    .context("siteSettingId", siteSetting.getId())
-                    .context("operate", "insert")
-                    .build();
+            throw new AppException(ErrorCode.SITE_SETTINGS_NOT_FOUND);
     }
 
     @Override

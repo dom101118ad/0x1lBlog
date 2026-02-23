@@ -39,20 +39,16 @@ public class TagOrchestrator {
         return tagService.getTagList();
     }
 
-    public String createTag(CreateTagRequest request){
-        System.out.println(request);
+    public void createTag(CreateTagRequest request){
         tagService.saveTag(request.getTagName(),request.getTagColor());
-        return "Tạo Tag thành công !!";
     }
 
-    public String deleteTagById(Long tagId){
+    public void deleteTagById(Long tagId){
         tagService.deleteTagById(tagId);
-        return "Xóa tag thành công!!";
     }
 
-    public String updateTag(UpdateTagRequest request){
+    public void updateTag(UpdateTagRequest request){
         tagService.updateTag(request.getTagName(), request.getTagColor(), request.getId());
-        return "Cập nhật tag thành công!!";
     }
 
     @SuppressWarnings("resource")
