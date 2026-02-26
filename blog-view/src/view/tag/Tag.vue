@@ -6,10 +6,12 @@
 
 <script setup lang="ts">
 import BlogList from "@/components/blogList/BlogList.vue";
-import {type BlogInfo, getBlogListByTagId, type TagIdGetBlogsResponse} from "@/network/tags";
+import { getBlogListByTagId} from "@/network/tags";
 import {computed, nextTick, onMounted, ref, watch} from "vue";
 import {useRoute} from "vue-router";
 import type {ApiResponse} from "@/plugins/axios2";
+import type {BlogInfo} from "@/types/blogType";
+import type {TagIdGetBlogsResponse} from "@/types/tagType";
 const route = useRoute()
 
 const blogList = ref<BlogInfo[]>([])
