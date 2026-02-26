@@ -47,7 +47,7 @@ import {useScrollToTop} from '@/util/ScrollToTop.js'
 import Tags from "@/components/sidebar/Tags.vue";
 import {getTags} from '@/network/tags'
 import type { ApiResponse} from "@/plugins/axios2";
-import type { Tag} from "@/network/tags";
+import type {Tag} from "@/types/tagType";
 
 
 const tags = ref<Tag[]>([])

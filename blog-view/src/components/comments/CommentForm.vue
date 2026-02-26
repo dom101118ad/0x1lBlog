@@ -15,11 +15,13 @@
        </div>
         <Message v-if="$form.content?.invalid " severity="error" size="small" variant="simple">
           {{ $form.content.error?.message}}</Message>
-
-<!--      <div  class="dividing"/>-->
       <div  >
-        <div  class="flex justify-content-center flex-wrap align-items-center">
-          <div  class="input-wrapper">
+        <div  class="flex justify-content-center flex-wrap">
+          <div>
+            <font-awesome-icon icon="face-laugh-squint"  />
+          </div>
+          <div class="flex justify-content-center align-items-center flex-wrap">
+            <div  class="input-wrapper">
             <FormField v-slot="$field" name="nickname" initial-value="">
               <font-awesome-icon icon="user"  />
 
@@ -28,37 +30,40 @@
               <Message v-if="$form.nickname?.invalid " severity="error" size="small" variant="simple">
                 {{ $form.nickname.error?.message  }}</Message>
             </FormField>
-            </div>      <Popover>đafsdfdf
-        </Popover>
-          <div class="input-wrapper">
-            <FormField v-slot="$field" name="email" initial-value="">
-              <font-awesome-icon icon="envelope"/>
-              <InputText id="on_email" v-model="form.email" name="email"
-                         :placeholder="'Email (bắt buộc)'"  @click="toggleEmail"/>
-              <Popover ref="opEmail">
+          </div>
+            <div class="input-wrapper">
+              <FormField v-slot="$field" name="email" initial-value="">
+                <font-awesome-icon icon="envelope"/>
+                <InputText id="on_email" v-model="form.email" name="email"
+                           :placeholder="'Email (bắt buộc)'"  @click="toggleEmail"/>
+                <Popover ref="opEmail">
+                  <div class="flex flex-col gap-4">
+                    <h3>Được dùng để nhận email hồi đáp</h3>
+                  </div>
+                </Popover>
+                <Message v-if="$form.email?.invalid" severity="error" size="small" variant="simple">
+                  {{$form.email.error?.message}}
+                </Message>
+              </FormField>
+            </div>
+            <div class="input-wrapper">
+              <font-awesome-icon icon="location-dot"/>
+              <InputText id="on_website" name="website" placeholder="https:// (tùy chọn)"
+                         @click="toggleWebsite" />
+              <Popover ref="opWebsite">
                 <div class="flex flex-col gap-4">
-                  <h3>Được dùng để nhận email hồi đáp</h3>
+                  <h3>Tôi có thể xem xung quanh được không? 😊</h3>
                 </div>
               </Popover>
-              <Message v-if="$form.email?.invalid" severity="error" size="small" variant="simple">
-                {{$form.email.error?.message}}
-              </Message>
-            </FormField>
-          </div>
-          <div class="input-wrapper">
-            <font-awesome-icon icon="location-dot"/>
-            <InputText id="on_website" name="website" placeholder="https:// (tùy chọn)"
-                       @click="toggleWebsite" />
-            <Popover ref="opWebsite">
-              <div class="flex flex-col gap-4">
-                <h3>Tôi có thể xem xung quanh được không? 😊</h3>
-              </div>
-            </Popover>
+            </div></div>
+          <div>
+            <span>Thông báo</span>
+            <ToggleSwitch v-model="form.notice"/>
+            <button type="submit">
+              <font-awesome-icon icon="location-arrow" class="mr-2" size="2xl" style="color: #00a6ff; "/>
+            </button>
           </div>
         </div>
-        <button class="icon-button" type="submit" >
-          <font-awesome-icon icon="location-arrow" class="mr-2" size="2xl" style="color: #00a6ff; "/>
-        </button>
       </div>
     </Form>
   </div>
@@ -121,6 +126,7 @@ const resolver = ref(zodResolver(commentSchema));
 
 const onsubmitF= (e) =>{
   console.log(e)
+  console.log(form.value)
   const fields = e.states
   if(!e.valid){
     if(fields.content.invalid)
@@ -163,10 +169,6 @@ const onsubmitF= (e) =>{
   border-bottom: #b3b3b3 1px solid;
   width: 98%;
 }
-.box-comment{
-  max-width: 100% ;
-  min-width: 100% ;
-}
 :deep(.p-textarea){
   width: 100% ;
   border: none;
@@ -186,6 +188,7 @@ const onsubmitF= (e) =>{
 .input-wrapper{
   border-bottom: #505050 1px solid;
   margin-left: 1rem;
+  width: 33%;
 }
 :deep(.p-inputtext){
   border: none;

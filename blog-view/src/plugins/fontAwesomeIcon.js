@@ -19,6 +19,7 @@ import {
     faUser,
     faLocationArrow,
     faLocationDot,
+    faFaceLaughSquint,
 } from '@fortawesome/free-solid-svg-icons'
 library.add(
     faHome,
@@ -39,6 +40,7 @@ library.add(
     faUser,
     faLocationArrow ,
     faLocationDot,
+    faFaceLaughSquint,
 )
 
 export default FontAwesomeIcon

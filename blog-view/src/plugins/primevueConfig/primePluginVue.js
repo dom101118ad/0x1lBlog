@@ -35,6 +35,7 @@ import Card from 'primevue/card'
 import Accordion from 'primevue/accordion'
 import AccordionPanel from 'primevue/accordionpanel'
 import Popover from 'primevue/popover'
+import ToggleSwitch  from 'primevue/toggleswitch'
 import Form from '@primevue/forms/form';
 import FormField from '@primevue/forms/formfield';
 import {SimplePreset} from "@/plugins/primevueConfig/primeThemeConfig.js";
@@ -80,6 +81,7 @@ const PrimeVuePlugin = {
             'Menubar': Menubar,
             'Card': Card,
             'AccordionPanel': AccordionPanel,
+            'ToggleSwitch': ToggleSwitch,
             'Form': Form,
             'Accordion': Accordion,
             'FormField': FormField,

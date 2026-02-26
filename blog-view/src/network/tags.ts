@@ -1,10 +1,7 @@
-import {request, type ApiResponse, type PageInfo} from '@/plugins/axios2'
+import {request, type ApiResponse} from '@/plugins/axios2'
+import type {Tag, TagIdGetBlogsResponse} from "@/types/tagType";
 
-export interface Tag{
-    id: number,
-    name: string,
-    color: string
-}
+
 
 export const getTags = (): Promise<ApiResponse<Tag[]>> =>
     request({
@@ -12,29 +9,6 @@ export const getTags = (): Promise<ApiResponse<Tag[]>> =>
         method: 'get'
     })
 
-
-export interface Category {
-    id: number;
-    name: string;
-}
-
-export interface BlogInfo {
-    id: number;
-    title: string;
-    description: string;
-    createTime: string;
-    views: number;
-    words: number;
-    readTime: number;
-    top: boolean;
-    category: Category;
-    tags: Tag[];
-}
-
-export interface TagIdGetBlogsResponse {
-    queryTag: Tag,
-    blogInfos: PageInfo<BlogInfo>;
-}
 
 export const getBlogListByTagId =
     (tagId: number, pageNum: number, pageSize: number): Promise<ApiResponse<TagIdGetBlogsResponse>> =>

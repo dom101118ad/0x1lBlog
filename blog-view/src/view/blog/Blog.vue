@@ -1,6 +1,6 @@
 <template>
   <div style="z-index: 10">
-    <div class="pb-2 px-4 pt-4 surface-card   relative " style="border: 1px solid #d4d4d5;">
+    <div class="pb-2 blog-container pt-4 surface-card relative " style="border: 1px solid #d4d4d5;">
 
       <PinTop v-if="blog.top"/>
       <!-- Container với flex layout -->
@@ -215,11 +215,18 @@ onUnmounted(() => {
   opacity: 0.7;
   text-decoration: none;
 }
-
+.blog-container{
+  padding-left: 1.5rem;
+  padding-right: 1.5rem;
+}
 @media (max-width: 768px) {
-  .main-content{
+  .blog-container{
     padding-right: max((100vw - 421px)/25, 0px) !important;
     padding-left: max((100vw - 421px)/25, 0px) !important;
+  }
+  .comment-container{
+    padding-right: max((100vw - 421px)/25, 2px) !important;
+    padding-left: max((100vw - 421px)/25, 2px) !important;
   }
 }
 .header{

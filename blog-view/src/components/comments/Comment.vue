@@ -56,7 +56,7 @@
           <div v-if="replyComment.threadRoot === cm.threadRoot && replyingComment.replyCmId" class="comment-item comment-reply">
             <CommentForm :replyComment="replyComment"/>
           </div>
-          <div class="thread-line"/>
+          <div v-if="cm.replyComment"  class="thread-line"/>
         </div>
       </div>
     </div>
@@ -142,7 +142,7 @@ watch(()=> props.comments , () =>{
 .comment-item{
   display: flex;
   flex-direction: row;
-  margin: 10px;
+  margin: 10px  ;
 }
 
 .comment{

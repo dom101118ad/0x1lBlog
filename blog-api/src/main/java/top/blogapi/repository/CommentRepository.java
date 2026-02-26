@@ -180,7 +180,7 @@ public interface CommentRepository {
             #{ip},
             #{published},
             #{adminComment},
-             #{page},
+            #{page},
             #{notice},
             #{parentCommentId},
             #{blog.id}

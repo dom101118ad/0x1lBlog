@@ -9,5 +9,5 @@ public class StringUtils {
         return false;
     }
 
-
+    private StringUtils(){}
 }

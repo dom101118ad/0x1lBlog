@@ -4,15 +4,10 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
-import top.blogapi.dto.response.comment.CommentByBlogIdResponse;
 import top.blogapi.model.vo.BlogIdAndTitle;
 import top.blogapi.model.vo.Result;
-import top.blogapi.repository.CommentRepository;
-import top.blogapi.service.CommentService;
 import top.blogapi.service.impl.orchestration.BlogOrchestrator;
-import top.blogapi.service.impl.orchestration.CommentOrchestrator;
 import top.blogapi.service.impl.orchestration.SiteSettingOrchestrator;
 
 import java.util.*;

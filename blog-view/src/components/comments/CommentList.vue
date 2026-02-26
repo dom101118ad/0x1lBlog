@@ -13,7 +13,7 @@
 import Comment from "@/components/comments/Comment.vue";
 import Pagination from "@/components/comments/Pagination.vue";
 import { ref} from "vue";
-import {getCommentListByQuery} from "@/network/comment.js";
+import {getCommentListByQuery} from "@/network/comment";
 const props = defineProps({
   page: {
     type: Number,

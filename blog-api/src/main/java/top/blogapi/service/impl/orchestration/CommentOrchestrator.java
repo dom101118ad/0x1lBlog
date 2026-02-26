@@ -3,6 +3,8 @@ package top.blogapi.service.impl.orchestration;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.maxmind.geoip2.model.CityResponse;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -12,11 +14,16 @@ import top.blogapi.dto.request.comment.CommentQueryRequest;
 import top.blogapi.dto.request.comment.CommentUpdateRequest;
 import top.blogapi.dto.request.comment.SaveCommentReq;
 import top.blogapi.dto.response.comment.CommentByBlogIdResponse;
+import top.blogapi.exception.AppException;
+import top.blogapi.exception.ErrorCode;
 import top.blogapi.mapper.CommentMapper;
 import top.blogapi.model.entity.Comment;
-import top.blogapi.model.vo.CommentTree;
+import top.blogapi.model.vo.BlogIdAndTitle;
 import top.blogapi.service.BlogService;
 import top.blogapi.service.CommentService;
+import top.blogapi.service.impl.GeoIpService;
+import top.blogapi.util.IpAddressUtils;
+import top.blogapi.util.MD5Utils;
 import top.blogapi.util.StringUtils;
 
 import java.util.List;
@@ -27,6 +34,7 @@ import java.util.Map;
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @RequiredArgsConstructor
 public class CommentOrchestrator {
+    GeoIpService geoIpService;
     CommentService commentService;
     CommentMapper commentMapper;
     BlogService blogService;
@@ -89,13 +97,34 @@ public class CommentOrchestrator {
         return false;
     }
 
-//    public void saveComment(SaveCommentReq req){
-//        if(StringUtils.isEmpty(req.getContent(), req.getEmail(), req.getWebsite(), req.getNickname())
-//                || req.getNickname().length() > 15 || req.getContent().length() > 250){
-//            throw BusinessException.builder()
-//                    .message("Thông số không chính xác")
-//                    .build();
-//        }
-//        commentService.saveComment(req);
-//    }
+    public void saveComment(SaveCommentReq req, HttpServletRequest request) throws Exception {
+        if(StringUtils.isEmpty(req.getContent(), req.getEmail(), req.getWebsite(), req.getNickname())
+                || req.getNickname().length() > 15 || req.getContent().length() > 250){
+            throw new AppException(ErrorCode.INVALID_INPUT,"Dữ liệu không đúng");
+        }
+        Comment comment = new Comment();
+        BlogIdAndTitle blogIdAndTitle = new BlogIdAndTitle(req.getBlogId(),"");
+        String nicknameMd5 = MD5Utils.getMD5(req.getNickname());
+        char m = nicknameMd5.charAt(nicknameMd5.length()-1);
+        int num = m % 6 + 1;
+
+        String website = req.getWebsite().trim();
+        if (!website.isEmpty() && !website.startsWith("http://") && !website.startsWith("https://"))
+            website = "http://" + website;
+
+//        CityResponse city = geoIpService.getCity(IpAddressUtils.getIpAddress(request));
+
+        comment.setAvatar(num+".png");
+        comment.setParentCommentId(req.getParentCommentId());
+        comment.setBlog(blogIdAndTitle);
+        comment.setNotice(req.isNotice());
+        comment.setAdminComment(false);
+        comment.setPublished(true);
+        comment.setContent(req.getContent().trim());
+        comment.setNickname(req.getNickname().trim());
+        comment.setEmail(req.getEmail().trim());
+        comment.setWebsite(website);
+        comment.setPage(0);
+        commentService.saveComment(comment);
+    }
 }

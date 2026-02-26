@@ -10,7 +10,7 @@
 
 <script setup lang="ts">
 import TagComponent from '@/components/blogList/Tag.vue'
-import type {Tag} from "@/network/tags";
+import type {Tag} from "@/types/tagType";
 
 const props = defineProps<{
   tagList: Tag[]
