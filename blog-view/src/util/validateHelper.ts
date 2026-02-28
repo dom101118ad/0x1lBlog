@@ -12,8 +12,8 @@ export function validateSchema<T extends Record<string, any>>(
     if(!result.success){
         const tree:$ZodErrorTree<T, string> = z.treeifyError(result.error);
         const errors: Partial<Record<keyof T, string>> = {}
-        for(const key in tree.properties){
-            const message = tree.properties[key].errors[0];
+        for(const key in (tree as any).properties){
+            const message = (tree as any).properties[key].errors[0];
             if(message && message.length>0)
                 errors[key as keyof T] = message
         }
