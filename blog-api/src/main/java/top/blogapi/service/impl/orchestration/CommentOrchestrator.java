@@ -26,6 +26,7 @@ import top.blogapi.util.IpAddressUtils;
 import top.blogapi.util.MD5Utils;
 import top.blogapi.util.StringUtils;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
@@ -125,6 +126,7 @@ public class CommentOrchestrator {
         comment.setEmail(req.getEmail().trim());
         comment.setWebsite(website);
         comment.setPage(0);
+        comment.setCreateTime(LocalDateTime.now());
         commentService.saveComment(comment);
     }
 }

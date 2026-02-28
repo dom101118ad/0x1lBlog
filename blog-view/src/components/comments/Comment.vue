@@ -1,7 +1,8 @@
 <template>
     <h3 class="dividing">Comments | Tổng {{ commentStats.totalComments }} bình luận</h3>
-    <CommentForm :reply-comment="replyComment"
-              v-if="!replyingComment.replyCmId"/>
+    <CommentInfoUser ref="infoRef" :form-validate-message="formValidateMessage"/>
+    <CommentForm v-if="!replyCmId"
+                 @submit="handleSubmit"/>
     <div class="comments-list">
       <div v-for="cm in comments"
            :key="cm.id"
@@ -15,13 +16,14 @@
             />
             <div class="comment"  :ref="el => setItemRef(el,cm.id)">
               <div class="comment-header">
-                <span class="nickname">{{cm.nickname}}</span>
+                <a class="nickname" :href="cm.website?.trim() || '#'"
+                   target="_blank" rel="external nofollow noopener">{{cm.nickname}}</a>
                 <div class="metadata">
                   {{ ` ${formatDate(cm.createTime,'YYYY-MM-DD HH:mm')}`}}
                 </div>
-                <span class="replying" :style="{background:  replyingComment.replyCmId ===cm.id? '#fa2745' : '#48a5ff'}"
+                <span class="replying" :style="{background: replyCmId ===cm.id? '#fa2745' : '#48a5ff'}"
                       @click="setReplyComment(cm.threadRoot,cm.id,cm.nickname)">
-                  {{replyingComment.replyCmId ===cm.id ? 'Hủy': 'Trả lời'}}</span>
+                  {{replyCmId ===cm.id ? 'Hủy': 'Trả lời'}}</span>
               </div>
               <div>{{cm.content}}</div>
             </div>
@@ -40,21 +42,22 @@
                 />
                 <div class="comment" :ref="el => setItemRef(el,replyCm.id)">
                   <div class="comment-header">
-                    <span class="nickname">{{replyCm.nickname}}</span>
+                    <a class="nickname"  :href="cm.website?.trim() || '#'"
+                          target="_blank" rel="external nofollow noopener">{{replyCm.nickname}}</a>
                     <div class="metadata">
                       {{ ` ${formatDate(replyCm.createTime,'YYYY-MM-DD HH:mm')}`}}
                     </div>
-                    <span class="replying" :style="{background:  replyingComment.replyCmId ===replyCm.id? '#fa2745' : '#48a5ff'}"
+                    <span class="replying" :style="{background: replyCmId ===replyCm.id? '#fa2745' : '#48a5ff'}"
                             @click="setReplyComment(cm.threadRoot,replyCm.id,replyCm.nickname)">
-                      {{replyingComment.replyCmId ===replyCm.id ? 'Hủy': 'Trả lời'}}</span>
+                      {{replyCmId ===replyCm.id ? 'Hủy': 'Trả lời'}}</span>
                   </div>
                   <div><span class="reply">{{`${replyCm.reply}`}}</span>{{ ` ${replyCm.content} `}}</div>
                 </div>
               </div>
             </div>
           </div>
-          <div v-if="replyComment.threadRoot === cm.threadRoot && replyingComment.replyCmId" class="comment-item comment-reply">
-            <CommentForm :replyComment="replyComment"/>
+          <div v-if="threadRoot === cm.threadRoot && replyCmId" class="comment-item comment-reply">
+            <CommentForm @submit="handleSubmit" />
           </div>
           <div v-if="cm.replyComment"  class="thread-line"/>
         </div>
@@ -63,59 +66,64 @@
 
 </template>
 
-<script setup>
+<script setup lang="ts">
 import {formatDate} from "@/util/dateTimeFormatUtils.js";
 import CommentForm from "@/components/comments/CommentForm.vue";
 import {ref, watch} from "vue";
+import {useCommentStore} from "@/store/commentStore";
+import {storeToRefs} from "pinia";
+import CommentInfoUser from "@/components/comments/CommentInfoUser.vue";
 
-const props = defineProps({
-  comments: {
-    type: Array,
-    required: true,
-  },
-  commentStats: {
-    type: Object,
-    required: true
-  }
-})
-const replyComment = ref({
-  threadRoot: null,
-  parentCommentId:null,
-  parentNickname: ''
-})
+const commentStore = useCommentStore()
+const {comments,threadRoot,commentStats,commentForm} = storeToRefs(commentStore)
 
-
-const commentRefs = ref({})
-let currentEl = null
-const replyingComment = ref({
-  replyCmId: null
-})
-const setReplyComment = (threadRoot,parentCommentId ,parentNickname) => {
-  if(replyingComment.value.replyCmId === parentCommentId){
-    replyingComment.value = {}
-    replyComment.value = {}
+const commentRefs = ref<Record<any,any>>({})
+let currentEl: any = null
+const replyCmId = ref<number|null>(null)
+const setReplyComment = (threadRootComment: number,parentId: number ,parentNicknameComment: string) => {
+  if(replyCmId.value === parentId){
+    replyCmId.value = null
     currentEl.classList.remove('is-reply')
+    commentStore.resetFormComment()
     return;
   }
-  replyingComment.value.replyCmId = parentCommentId
+  replyCmId.value = parentId
   if(currentEl )
     currentEl.classList.remove('is-reply')
-  currentEl = commentRefs.value[parentCommentId]
+  currentEl = commentRefs.value[parentId]
   currentEl.classList.add('is-reply')
-  replyComment.value.parentCommentId = parentCommentId
-  replyComment.value.threadRoot = threadRoot
-  replyComment.value.parentNickname = parentNickname
+  commentStore.setFieldFromComment(threadRootComment,parentId,parentNicknameComment)
 }
 
-const setItemRef= (el, index) =>{
+const infoRef = ref<{
+  scrollToField: (field: "nickname" | "email") => void
+}|null>(null)
+
+const formValidateMessage = ref<Record<string, string>>({
+  nickname: '',
+  email:'',
+})
+const handleSubmit = async () => {
+  const { valid, firstErrorKey } = commentStore.validateAll()
+  formValidateMessage.value = {}
+  if (!valid && firstErrorKey) {
+    formValidateMessage.value[firstErrorKey[0]] = firstErrorKey[1]
+    infoRef.value?.scrollToField(firstErrorKey[0] as any)
+    return
+  }
+  await commentStore.postComment()
+
+}
+const setItemRef= (el: any, index: number) =>{
   if(el&&!commentRefs.value[index])
     commentRefs.value[index]=el
 }
 
 // khi đổi trang cần phải reset tránh truy cập id tồn tại
 // trong commentRefs nhưng không có trong Dom hiện tại
-watch(()=> props.comments , () =>{
+watch(()=> comments.value , () =>{
   commentRefs.value = {}
+  replyCmId.value = null
 })
 </script>
 

@@ -39,7 +39,7 @@ import Nav from "@/components/index/Nav.vue";
 import {computed, onMounted, ref, watch} from "vue";
 import Footer from "@/components/index/Footer.vue";
 import {getHitokoto, getSite, translateUrl} from "@/network/index.js";
-import {useAppStore} from "@/store/index.js";
+import {useAppStore} from "@/store";
 import {useRoute} from "vue-router";
 import Introduction from "@/components/sidebar/Introduction.vue";
 import {storeToRefs} from "pinia";

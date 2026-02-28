@@ -30,7 +30,8 @@ public class CommentController {
     }
 
     @PostMapping("/comment")
-    public Result<?> createComment (SaveCommentReq req, HttpServletRequest request) throws Exception {
+    public Result<?> createComment (@RequestBody SaveCommentReq req,
+                                    HttpServletRequest request) throws Exception {
         commentOrchestrator.saveComment(req,request);
         return Result.ok("Đã viết bình luận");
     }

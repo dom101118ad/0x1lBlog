@@ -1,51 +1,27 @@
 <template>
   <Paginator
-    :rows="pageSize"
-    :total-records="total"
-    @page="goToPage"
+    :rows="commentQuery.pageSize"
+    :total-records="totalPages*commentQuery.pageSize"
+    @page="handleCurrentChange"
     :pageLinkSize="7"
     :alwaysShow="false"
   />
 </template>
 
-<script setup>
-import {computed, onMounted, ref} from "vue";
+<script setup lang="ts">
+import {useCommentStore} from "@/store/commentStore";
+import type {PageState} from "primevue";
+import {storeToRefs} from "pinia";
+import {onMounted} from "vue";
 
-const props = defineProps({
-  page: {
-    type: Number,
-    required: true
-  },
-  blogId: {
-    type: Number,
-    required: true
-  },
-  detailPaginator:{
-    type: Object,
-    required: true
-  }
-})
+const commentStore = useCommentStore()
+const {commentQuery, totalPages} = storeToRefs(commentStore)
 
-const pageSize = computed(() => props.detailPaginator.pageSize)
-const total = computed(() => props.detailPaginator.total)
-
-const emit = defineEmits(['page-change',])
-
-const pageNum = ref(1);
-const query = computed(() => ({
-  page: props.page,
-  blogId: props.blogId,
-  pageNum: pageNum.value,
-  pageSize: 5,
-}))
-
-const goToPage = (pageState) => {
-  pageNum.value = pageState.page+1
-  emit('page-change',query.value)
+const handleCurrentChange = (pageState: PageState) => {
+  commentStore.setCommentQueryPageNum(pageState.page+1)
+  commentStore.resetFormComment()
+  commentStore.getCommentList()
 }
-
-onMounted(() => emit('page-change',query.value))
-
 </script>
 
 <style scoped>

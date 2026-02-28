@@ -2,7 +2,7 @@ import {createRouter, createWebHistory} from "vue-router";
 import Index from "@/view/Index.vue";
 import Home from "@/view/home/Home.vue";
 import GridL from "@/view/GridL.vue";
-import {useAppStore} from "@/store/index.js";
+import {useAppStore} from "@/store/index.ts";
 import Archives from "@/view/archives/Archives.vue";
 import Blog from "@/view/blog/Blog.vue";
 import Tag from "@/view/tag/Tag.vue";

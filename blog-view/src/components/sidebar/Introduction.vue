@@ -107,7 +107,7 @@ import Panel from 'primevue/panel'
 import AccordionContent from 'primevue/accordioncontent'
 import AccordionHeader from 'primevue/accordionheader'
 import AccordionPanel from 'primevue/accordionpanel';
-import {useAppStore} from "@/store/index.js";
+import {useAppStore} from "@/store/index.ts";
 
 
 const activeIndex = ref(null);

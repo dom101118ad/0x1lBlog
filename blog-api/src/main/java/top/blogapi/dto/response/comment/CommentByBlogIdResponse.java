@@ -1,6 +1,7 @@
 package top.blogapi.dto.response.comment;
 
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.github.pagehelper.PageInfo;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -36,9 +37,11 @@ public class CommentByBlogIdResponse {
         String nickname;
         String content;
         String avatar;
+        @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
         LocalDateTime createTime;
         Boolean adminComment;
         String reply;
+        String website;
         Long threadRoot;
         List<CommentNode> replyComment;
     }

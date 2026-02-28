@@ -106,7 +106,7 @@ public interface CommentRepository {
     @Select("""
     <script>
         SELECT
-            id, nickname, content, avatar, create_time, is_admin_comment, parent_comment_id,
+            id, nickname, content, avatar, create_time, is_admin_comment, parent_comment_id, website,
             id AS thread_root,
             1 AS depth,
             CAST('' AS char(100)) as reply
@@ -128,7 +128,7 @@ public interface CommentRepository {
     <script>
         WITH RECURSIVE comment_tree AS (
             SELECT
-                id, nickname, content, avatar, create_time, is_admin_comment, parent_comment_id,
+                id, nickname, content, avatar, create_time, is_admin_comment, parent_comment_id, website,
                 id AS thread_root,
                 1 AS depth,
                 CAST('' AS char(100)) as reply
@@ -139,7 +139,7 @@ public interface CommentRepository {
             </foreach>
             UNION ALL
             SELECT
-                c.id, c.nickname, c.content, c.avatar, c.create_time, c.is_admin_comment, c.parent_comment_id,
+                c.id, c.nickname, c.content, c.avatar, c.create_time, c.is_admin_comment, c.parent_comment_id, c.website,
                 ct.thread_root,
                 ct.depth + 1,
                 CONCAT('@',ct.nickname) as reply

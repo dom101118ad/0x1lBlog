@@ -99,7 +99,7 @@ import Tag from '@/components/blogList/Tag.vue'
 import { getBlogById } from '@/network/blog'
 import { formatDate } from "@/util/dateTimeFormatUtils.js";
 import {useRoute} from "vue-router";
-import {useAppStore} from "@/store/index.js";
+import {useAppStore} from "@/store/index.ts";
 import {storeToRefs} from "pinia";
 import Ribbon from "@/components/blogList/Ribbon.vue";
 import PinTop from "@/components/blogList/PinTop.vue";

@@ -159,9 +159,19 @@ const PrimeVuePlugin = {
 
         // Provide toast service cho Composition API
         app.provide('toast', toastService)
+        app.config.globalProperties.$toastService = toastService
     }
 }
-
+let globalToastService = null
+export const toast = {
+    success: (...args) => globalToastService?.success(...args),
+    error: (...args) => globalToastService?.error(...args),
+    info: (...args) => globalToastService?.info(...args),
+    warn: (...args) => globalToastService?.warn(...args),
+    confirm: (...args) => globalToastService?.confirm(...args),
+    showLoading: (...args) => globalToastService?.showLoading(...args),
+    hideLoading: () => globalToastService?.hideLoading()
+}
 // Composition API helper
 export function useToast() {
     const toast = inject('toast')

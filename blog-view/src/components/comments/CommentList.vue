@@ -1,19 +1,20 @@
 <template>
   <div >
-    <Comment :comment-stats="commentStats" :comments="comments"/>
-    <Pagination :blog-id="blogId"
-                :page="page"
-                :detailPaginator="detailPaginator"
-                @page-change="handlePageChange"
-    />
+    <Comment/>
+    <Pagination/>
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import Comment from "@/components/comments/Comment.vue";
 import Pagination from "@/components/comments/Pagination.vue";
-import { ref} from "vue";
-import {getCommentListByQuery} from "@/network/comment";
+import {watch} from "vue";
+import {useCommentStore} from "@/store/commentStore";
+import {useRoute} from "vue-router";
+
+const route = useRoute()
+const commentStore = useCommentStore()
+
 const props = defineProps({
   page: {
     type: Number,
@@ -24,31 +25,18 @@ const props = defineProps({
     required: true,
   }
 })
-
-const totalPages = ref(0)
-const comments = ref([])
-const commentStats = ref({})
-const detailPaginator = ref({})
-
-const getCommentList = async (query) => {
-  try{
-    const res = await getCommentListByQuery(query)
-    if(res.code === 200){
-      totalPages.value = res.data.comments.totalPage
-      comments.value = res.data.comments.list
-      commentStats.value = res.data.commentStats
-      detailPaginator.value = res.data.comments
-    }
-  }catch (error){
-    console.error(error)
-  }
+const init =  () => {
+  commentStore.setCommentQueryPage(props.page)
+  commentStore.setCommentQueryBlogId(props.blogId)
+  commentStore.setCommentQueryPageNum(1)
+  commentStore.getCommentList()
 }
+watch(() => route.params.id,
+    (newId) => {
+  init()
+},{ immediate: true})
 
-const handlePageChange = (query) =>{
-  getCommentList(query)
-}
 
 </script>
 <style scoped>
-
 </style>

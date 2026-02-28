@@ -1,7 +1,8 @@
 import axios from '@/plugins/axios'
-import type {SaveCommentReq} from "@/types/commentType";
+import type {CommentByBlogIdResponse, SaveCommentReq} from "@/types/commentType";
+import type {ApiResponse} from "@/plugins/axios2";
 
-export function getCommentListByQuery(query: any) {
+export function getCommentListByQuery(query: any):Promise<ApiResponse<CommentByBlogIdResponse>> {
     return axios({
         url: 'comment-tree',
         method: 'GET',
@@ -11,7 +12,7 @@ export function getCommentListByQuery(query: any) {
     })
 }
 
-export function saveComment(req: SaveCommentReq){
+export function submitComment(req: SaveCommentReq):Promise<ApiResponse<null>>{
     return axios({
         url: 'comment',
         method: 'POST',
