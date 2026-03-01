@@ -5,6 +5,7 @@ import org.apache.ibatis.logging.slf4j.Slf4jImpl;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.mybatis.spring.SqlSessionFactoryBean;
 import org.mybatis.spring.annotation.MapperScan;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
@@ -16,6 +17,15 @@ import java.util.List;
 @Configuration
 @MapperScan(basePackages = "top.blogapi.repository")
 public class DataSourceConfig {
+
+    @Value("${datasource.url}")
+    String datasourceUrl;
+    @Value("${datasource.username}")
+    String datasourceUsername;
+    @Value("${datasource.password}")
+    String datasourcePassword;
+
+
     @Bean
     public DataSource dataSource() {
         HikariDataSource dataSource = getHikariDataSource();
@@ -46,12 +56,12 @@ public class DataSourceConfig {
         return dataSource;
     }
 
-    private static HikariDataSource getHikariDataSource() {
+    private  HikariDataSource getHikariDataSource() {
         HikariDataSource dataSource = new HikariDataSource();
         dataSource.setDriverClassName("com.mysql.cj.jdbc.Driver");
-        dataSource.setJdbcUrl("jdbc:mysql://localhost:3306/blog");
-        dataSource.setUsername("root");
-        dataSource.setPassword("1820");
+        dataSource.setJdbcUrl(datasourceUrl);
+        dataSource.setUsername(datasourceUsername);
+        dataSource.setPassword(datasourcePassword);
 
         // ========== CẤU HÌNH HIKARI CP CONNECTION POOL ==========
 
