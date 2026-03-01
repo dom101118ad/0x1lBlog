@@ -18,11 +18,11 @@ import java.util.List;
 @MapperScan(basePackages = "top.blogapi.repository")
 public class DataSourceConfig {
 
-    @Value("${datasource.url}")
+    @Value("${spring.datasource.url}")
     String datasourceUrl;
-    @Value("${datasource.username}")
+    @Value("${spring.datasource.username}")
     String datasourceUsername;
-    @Value("${datasource.password}")
+    @Value("${spring.datasource.password}")
     String datasourcePassword;
 
 
