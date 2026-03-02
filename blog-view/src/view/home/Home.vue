@@ -8,7 +8,7 @@
 <script setup>
 import BlogList from "@/components/blogList/BlogList.vue";
 import {onMounted, ref} from 'vue'
-import {getBlogList} from "@/network/home.js";
+import {getBlogList} from "@/api/home.js";
 import {useToast} from "@/plugins/primevueConfig/primePluginVue.js";
 
 const toast = useToast()

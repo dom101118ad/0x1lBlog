@@ -53,7 +53,7 @@
 <script setup lang="ts">
 import { ref, reactive, getCurrentInstance } from 'vue'
 import { useRouter } from 'vue-router'
-import { login } from '@/network/login'
+import { login } from '@/api/login'
 import {User} from "@element-plus/icons-vue";
 import {handleAxiosError} from "@/plugins/apiErrorHandler";
 

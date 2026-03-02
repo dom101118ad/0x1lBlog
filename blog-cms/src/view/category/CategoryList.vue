@@ -62,7 +62,7 @@
 <script setup>
 import { ref , reactive, onMounted} from "vue";
 import Breadcrumb from "@/components/Breadcrumb.vue";
-import {getDataQuery, deleteCategoryById, createCategory, updateCategoryById} from "@/network/category.js";
+import {getDataQuery, deleteCategoryById, createCategory, updateCategoryById} from "@/api/category.js";
 import {Edit, Delete, Plus} from "@element-plus/icons-vue";
 import { getCurrentInstance } from "vue";
 

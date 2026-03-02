@@ -13,7 +13,7 @@
 <script setup>
 
 import { ref, computed } from 'vue'
-import {generateHtml,generateText} from "@/network/markdown.js";
+import {generateHtml,generateText} from "@/api/markdown.js";
 
 const text = ref('')
 
