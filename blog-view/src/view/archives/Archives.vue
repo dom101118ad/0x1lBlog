@@ -236,7 +236,7 @@ h2{
 
 <script setup>
 import {onMounted, ref} from 'vue'
-import {getArchives} from "@/network/archive.js";
+import {getArchives} from "@/api/archive.js";
 
 // const blogMap = ref({
 //   "12/2023": [
