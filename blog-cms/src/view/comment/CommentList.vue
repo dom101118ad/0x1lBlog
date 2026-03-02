@@ -168,7 +168,7 @@ import {
   getCommentListByQuery, updateComment,
   updateCommentNoticeById,
   updateCommentPublishedById
-} from "@/network/comment.js";
+} from "@/api/comment.js";
 import {Delete, Edit} from "@element-plus/icons-vue";
 import {checkEmail} from "@/common/reg.js";
 

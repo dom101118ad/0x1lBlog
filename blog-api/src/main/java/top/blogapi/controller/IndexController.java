@@ -26,4 +26,9 @@ public class IndexController {
         map.put("newBlogList", newBLogList);
         return Result.ok("Yêu cầu thành công !!", map);
     }
+    @GetMapping("/")
+    public String health() {
+        System.out.println("oke");
+        return "OK";
+    }
 }

@@ -96,7 +96,7 @@ import APlayer from 'aplayer'
 import 'aplayer/dist/APlayer.min.css'
 import {ref, onMounted, onUnmounted ,nextTick, computed, watch} from 'vue'
 import Tag from '@/components/blogList/Tag.vue'
-import { getBlogById } from '@/network/blog'
+import { getBlogById } from '@/api/blog'
 import { formatDate } from "@/util/dateTimeFormatUtils.js";
 import {useRoute} from "vue-router";
 import {useAppStore} from "@/store/index.ts";

@@ -111,7 +111,7 @@ import {
   getDataQuery, deleteBlogById, getCategoryAndTag,
   saveBlog, updateBlogRecommendById, updateBlogPublishedById, updateTop
 }
-  from '@/network/blog.js'
+  from '@/api/blog.js'
 import { formatDate } from '@/util/dateTimeFormatUtils.js'
 import  { getCurrentInstance } from 'vue'
 import Breadcrumb from "@/components/Breadcrumb.vue";

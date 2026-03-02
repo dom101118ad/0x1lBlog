@@ -1,7 +1,7 @@
 import {defineStore} from "pinia";
 import {ref, watch} from "vue";
 import type {CommentNode, CommentQuery, CommentStats, SaveCommentReq} from "@/types/commentType";
-import {getCommentListByQuery, submitComment} from "@/network/comment";
+import {getCommentListByQuery, submitComment} from "@/api/comment";
 
 import {validateSchema} from "@/util/validateHelper";
 import z from "zod";

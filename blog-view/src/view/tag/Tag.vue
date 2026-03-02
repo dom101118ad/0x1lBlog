@@ -6,7 +6,7 @@
 
 <script setup lang="ts">
 import BlogList from "@/components/blogList/BlogList.vue";
-import { getBlogListByTagId} from "@/network/tags";
+import { getBlogListByTagId} from "@/api/tags";
 import {computed, nextTick, onMounted, ref, watch} from "vue";
 import {useRoute} from "vue-router";
 import type {ApiResponse} from "@/plugins/axios2";

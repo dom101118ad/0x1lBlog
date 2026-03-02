@@ -38,14 +38,14 @@
 import Nav from "@/components/index/Nav.vue";
 import {computed, onMounted, ref, watch} from "vue";
 import Footer from "@/components/index/Footer.vue";
-import {getHitokoto, getSite, translateUrl} from "@/network/index.js";
+import {getHitokoto, getSite, translateUrl} from "@/api/index.js";
 import {useAppStore} from "@/store";
 import {useRoute} from "vue-router";
 import Introduction from "@/components/sidebar/Introduction.vue";
 import {storeToRefs} from "pinia";
 import {useScrollToTop} from '@/util/ScrollToTop.js'
 import Tags from "@/components/sidebar/Tags.vue";
-import {getTags} from '@/network/tags'
+import {getTags} from '@/api/tags'
 import type { ApiResponse} from "@/plugins/axios2";
 import type {Tag} from "@/types/tagType";
 

@@ -134,7 +134,7 @@
 
 import {ref, reactive, onMounted} from 'vue'
 import { useRouter , useRoute} from 'vue-router'
-import { getCategoryAndTag, saveBlog , getBlogById , updateBlog} from '@/network/blog'
+import { getCategoryAndTag, saveBlog , getBlogById , updateBlog} from '@/api/blog'
 import { getCurrentInstance } from "vue";
 import Breadcrumb from "@/components/Breadcrumb.vue";
 

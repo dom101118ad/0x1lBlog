@@ -117,7 +117,7 @@
 <script setup>
 import Breadcrumb from "@/components/Breadcrumb.vue";
 import { ref, reactive, onMounted } from "vue";
-import {createTag, deleteTagById, getData, updateTag} from "@/network/tag.js";
+import {createTag, deleteTagById, getData, updateTag} from "@/api/tag.js";
 import { getCurrentInstance } from "vue";
 import {Delete, Edit, Plus} from "@element-plus/icons-vue";
 import Tag from '@/components/tag/Tag.vue'

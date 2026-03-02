@@ -119,7 +119,7 @@ import { ref, onMounted } from 'vue'
 import { cloneDeep } from 'lodash-es'
 import { Delete, Plus, Check } from '@element-plus/icons-vue'
 import Breadcrumb from "@/components/Breadcrumb.vue"
-import {getSiteSettingData, update,} from "@/network/siteSetting"
+import {getSiteSettingData, update,} from "@/api/siteSetting"
 import {useToast} from "@/plugins/primevueConfig/primePluginVue.js";
 
 const toast = useToast()
