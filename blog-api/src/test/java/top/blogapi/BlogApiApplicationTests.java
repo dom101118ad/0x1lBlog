@@ -60,6 +60,10 @@ class BlogApiApplicationTests {
 //	}
 
 	@Test
+	void test16(){
+		System.out.println(blogRepository.getRandomBlogListByLimitNumAndIsPublished(5));
+	}
+	@Test
 	void test15(){
 		commentRepository.findRepliesByRootIds(List.of(1L)).forEach(System.out::println);
 	}

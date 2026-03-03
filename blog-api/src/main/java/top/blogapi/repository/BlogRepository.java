@@ -246,4 +246,17 @@ public interface BlogRepository {
         SELECT is_comment_enabled from blog where id = #{blogId}
 """)
     Boolean getCommentEnabledByBlogId(Long blogId);
+
+    @Select("""
+    SELECT b.id, b.title, c.id AS category_id, c.name AS category_name
+    FROM blog AS b LEFT JOIN category AS c ON b.category_id=c.id
+    WHERE b.is_published
+    ORDER BY RAND()
+    LIMIT #{limitNum}
+""")
+    @Results({
+            @Result(property = "category.name", column = "category_name"),
+            @Result(property = "category.id", column = "category_id"),
+    })
+    List<Blog> getRandomBlogListByLimitNumAndIsPublished(int limitNum);
 }

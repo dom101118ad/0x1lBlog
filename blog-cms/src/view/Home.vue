@@ -3,7 +3,7 @@
     <!-- Header -->
     <el-header>
       <div class="header-left">
-        <span><img src="@/assets/img/logo.svg" alt="Logo" height="60">
+        <span><img src="/img/logo.svg" alt="Logo" height="60">
            Hệ thống quản lý Blog</span>
       </div>
       <el-button type="info" @click="logout">Đăng xuất</el-button>
