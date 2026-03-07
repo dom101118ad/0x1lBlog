@@ -408,3 +408,15 @@ footer {
     margin-bottom: 1rem;
   }
 }
+
+/*custom menu primevue*/
+.custom-menu-nav{
+  background-color: rgba(27, 28, 29, 0.95) !important;
+  border: none !important;
+}
+.custom-menu-nav .p-menu-item-content{
+  color: rgba(255, 255, 255, 0.8) !important;
+}
+.custom-menu-nav .p-menu-item-content:hover {
+  background: #505050!important; !important;
+}

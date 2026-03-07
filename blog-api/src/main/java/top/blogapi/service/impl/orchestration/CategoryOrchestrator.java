@@ -34,6 +34,10 @@ public class CategoryOrchestrator {
         return categoryService.getCategoryList(request);
     }
 
+    public List<Category> getCategoryList(){
+        return categoryService.getCategoryList();
+    }
+
     public void deleteCategoryById(Long id) {
 //        if(blogService.countBlogByCategoryId(id)>0)
 //            throw CategoryServiceException.builder()

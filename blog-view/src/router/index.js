@@ -51,7 +51,13 @@ const routes = [
                 meta: {
                     title: 'Tag'
                 }
-            }
+            },
+            {
+                path: '/category/:name',
+                name: 'category',
+                component: () => import('@/view/category/Category.vue'),
+                meta: {title: 'Thể loại'}
+            },
         ]
     },
 ]
