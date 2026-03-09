@@ -9,7 +9,18 @@
 
             <div class="hidden md:block flex-none sticky-sidebar-wrapper" style="width: 18.75% !important;">
               <div class="sticky-sidebar">
-                <Introduction/>
+                <Introduction
+                    v-show="$route.name!=='blog'"
+                />
+                <div class="toc-wrapper">
+                  <Toc
+                      ref="tocComponent"
+                      :contentSelector="'.blog-content'"
+                      headingSelector="h1, h2, h3"
+                      :scrollOffset="80"
+                      v-show="$route.name==='blog'"
+                  />
+                </div>
               </div>
             </div>
             <div class="flex-1 min-w-0 main-content" style="width: 62.5% !important;">
@@ -36,11 +47,11 @@
 
 <script setup lang="ts">
 import Nav from "@/components/index/Nav.vue";
-import {computed, onMounted, ref, watch} from "vue";
+import {computed, nextTick, onMounted, ref, watch} from "vue";
 import Footer from "@/components/index/Footer.vue";
 import {getHitokoto, getSite, translateUrl} from "@/api/index.js";
 import {useAppStore} from "@/store";
-import {useRoute} from "vue-router";
+import {onBeforeRouteLeave, useRoute} from "vue-router";
 import Introduction from "@/components/sidebar/Introduction.vue";
 import {storeToRefs} from "pinia";
 import {useScrollToTop} from '@/util/ScrollToTop.js'
@@ -48,7 +59,7 @@ import Tags from "@/components/sidebar/Tags.vue";
 import {getTags} from '@/api/tags'
 import type { ApiResponse} from "@/plugins/axios2";
 import type {Tag} from "@/types/tagType";
-
+import Toc from "@/components/sidebar/Toc.vue";
 
 const tags = ref<Tag[]>([])
 const loading = ref(false)
@@ -82,10 +93,6 @@ const getHitokotoData = async () => {
     }
   }
 }
-
-watch(() => route.fullPath, () =>{
-  scrollToTop()
-})
 
 const site = async () => {
   try {
@@ -123,11 +130,28 @@ const fetchTags = async () => {
   }
 }
 
+const tocComponent = ref<InstanceType<typeof Toc>|null>(null)
+const initToc = () => {
+  console.log(tocComponent.value)
+  if (tocComponent.value) {
+    setTimeout(() => {
+      tocComponent.value?.refreshToc()
+    }, 100)
+  }
+}
+watch(() => route.fullPath,
+    () => {
+      nextTick()
+      scrollToTop()
+      initToc()
+    },{immediate:true}
+)
 onMounted(() => {
   site()
   getHitokotoData()
   fetchTags()
 })
+
 </script>
 
 <style scoped>
@@ -173,6 +197,41 @@ onMounted(() => {
   z-index: 1000;
 }
 
+/* Style cho TOC wrapper */
+.toc-wrapper {
+  position: sticky;
+  top: 80px;
+  max-height: calc(100vh - 100px);
+  overflow-y: auto;
+  padding: 0.5rem;
+  border-left: 1px solid #e9ecef;
+}
+
+
+
+@media (max-width: 768px) {
+  .blog-container {
+    padding-right: max((100vw - 421px)/25, 0px) !important;
+    padding-left: max((100vw - 421px)/25, 0px) !important;
+  }
+  .comment-container {
+    padding-right: max((100vw - 421px)/25, 2px) !important;
+    padding-left: max((100vw - 421px)/25, 2px) !important;
+  }
+}
+
+.header {
+  border: none;
+  margin: 0 1rem;
+  top: 13px;
+  padding: 0 0;
+  font-size: 1.71428571rem;
+  font-family: Lato, 'Helvetica Neue', Arial, Helvetica, sans-serif;
+  font-weight: 700;
+  line-height: 1.28571429em;
+  text-transform: none;
+  color: rgba(0, 0, 0, .87);
+}
 .scroll-top-btn:hover {
   transform: translateY(-3px);
   filter: brightness(1.1);

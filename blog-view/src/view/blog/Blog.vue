@@ -47,7 +47,8 @@
             </button>
             <div v-if="blog.musicInfo" ref="playerRef"/>
             <!-- Mô tả bài viết -->
-            <div class="typo m-padded-tb-small px-3 line-numbers match-braces rainbow-braces" v-html="blog.content"></div>
+            <div class="typo m-padded-tb-small px-3 blog-content
+            line-numbers match-braces rainbow-braces" v-html="blog.content"></div>
             <!-- Divider -->
             <div class="col-12">
               <div class="border-top-1 surface-border my-2"></div>
@@ -94,21 +95,21 @@
 <script setup>
 import APlayer from 'aplayer'
 import 'aplayer/dist/APlayer.min.css'
-import {ref, onMounted, onUnmounted ,nextTick, computed, watch} from 'vue'
+import { ref, onMounted, onUnmounted, nextTick, computed, watch } from 'vue'
 import Tag from '@/components/blogList/Tag.vue'
 import { getBlogById } from '@/api/blog'
-import { formatDate } from "@/util/dateTimeFormatUtils.js";
-import {useRoute} from "vue-router";
-import {useAppStore} from "@/store/index.ts";
-import {storeToRefs} from "pinia";
-import Ribbon from "@/components/blogList/Ribbon.vue";
-import PinTop from "@/components/blogList/PinTop.vue";
-import CommentList from "@/components/comments/CommentList.vue";
+import { formatDate } from "@/util/dateTimeFormatUtils.js"
+import { useRoute } from "vue-router"
+import { useAppStore } from "@/store/index.ts"
+import { storeToRefs } from "pinia"
+import Ribbon from "@/components/blogList/Ribbon.vue"
+import PinTop from "@/components/blogList/PinTop.vue"
+import CommentList from "@/components/comments/CommentList.vue"
 
 const store = useAppStore()
 const route = useRoute()
 
-const {author} = storeToRefs(store)
+const { author } = storeToRefs(store)
 
 const blogId = computed(() => parseInt(route.params.id))
 const blog = ref({})
@@ -167,9 +168,6 @@ const fetchBlog = async () => {
   }
 }
 
-
-// ========== IMPORT THEME ==========
-
 onMounted(async () => {
   await fetchBlog();
   playerInstance = init();
@@ -185,7 +183,7 @@ onUnmounted(() => {
 </script>
 
 <style scoped>
-.comment-container{
+.comment-container {
   margin-top: -1px;
   padding: 0 15px;
   background: #fff;
@@ -215,21 +213,21 @@ onUnmounted(() => {
   opacity: 0.7;
   text-decoration: none;
 }
-.blog-container{
+.blog-container {
   padding-left: 1.5rem;
   padding-right: 1.5rem;
 }
 @media (max-width: 768px) {
-  .blog-container{
+  .blog-container {
     padding-right: max((100vw - 421px)/25, 0px) !important;
     padding-left: max((100vw - 421px)/25, 0px) !important;
   }
-  .comment-container{
+  .comment-container {
     padding-right: max((100vw - 421px)/25, 2px) !important;
     padding-left: max((100vw - 421px)/25, 2px) !important;
   }
 }
-.header{
+.header {
   border: none;
   margin: 0 1rem;
   top: 13px;

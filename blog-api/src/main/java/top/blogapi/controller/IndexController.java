@@ -1,5 +1,6 @@
 package top.blogapi.controller;
 
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -9,6 +10,7 @@ import top.blogapi.model.vo.BlogIdAndTitle;
 import top.blogapi.model.vo.Result;
 import top.blogapi.service.impl.orchestration.BlogOrchestrator;
 import top.blogapi.service.impl.orchestration.SiteSettingOrchestrator;
+import top.blogapi.util.IpAddressUtils;
 
 import java.util.*;
 
@@ -30,5 +32,13 @@ public class IndexController {
     public String health() {
         System.out.println("oke");
         return "OK";
+    }
+
+    @GetMapping("/ip")
+    public Map<String,String> getIp(HttpServletRequest request){
+        String ip = IpAddressUtils.getIpAddress(request);
+        return Map.of(
+                "ip",ip
+        );
     }
 }
