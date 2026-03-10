@@ -80,7 +80,6 @@
 
 <script setup lang="ts">
 import {computed, onMounted, ref} from 'vue'
-import { defineProps } from 'vue'
 import {useRouter} from "vue-router";
 import type {Category} from "@/types/categoryType.ts";
 import type {ApiResponse} from "@/plugins/axios2";

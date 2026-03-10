@@ -103,7 +103,7 @@ function generateToc() {
   if (!headings.length) return
   const items = headings.map((heading, index) => {
     if (!heading.id)
-      heading.id ||= `h-${hashString(heading.innerText)}`
+      heading.id ||= `h-${hashString(heading.innerText+index)}`
     return {
       id: heading.id,
       text: heading.innerText,
@@ -113,7 +113,7 @@ function generateToc() {
     }
   })
   toc.value = buildHierarchy(items)
-  console.log('TOC generated:', toc.value)
+  // console.log('TOC generated:', toc.value)
 }
 
 // Tìm heading active dựa trên vị trí scroll
@@ -142,7 +142,7 @@ function updateActiveHeading() {
   const activeHeading = findActiveHeading()
   if (activeHeading && activeHeading.id !== activeId.value) {
     activeId.value = activeHeading.id
-    console.log('Active heading:', activeHeading.id, activeHeading.innerText) // Debug
+    // console.log('Active heading:', activeHeading.id, activeHeading.innerText) // Debug
   }
 }
 
@@ -201,9 +201,7 @@ function initObserver() {
           })
           if (topHeading.id !== activeId.value)
             activeId.value = topHeading.id
-
         } else
-
           updateActiveHeading()
       },
       {
@@ -236,6 +234,8 @@ watch(activeId, (newId) => {
 function cleanup() {
   observer?.disconnect()
   observer = null
+  headings = []
+  toc.value = []
   window.removeEventListener('scroll', handleScroll)
   if (scrollTimer) {
     clearTimeout(scrollTimer)
@@ -256,32 +256,39 @@ function refreshToc() {
     if (headings.length) {
       initObserver()
       updateActiveHeading()
+      window.addEventListener(
+          'scroll',
+          handleScroll,
+          { passive: true }
+      )
     }
   } catch (error) {
     console.error('Error refreshToc:', error)
   }
 }
 
-watch(
-    () => route.fullPath,
-    async () => {
-      cleanup()
-      if (route.name !== 'blog') return
-      await nextTick()
-      refreshToc()
-      window.addEventListener(
-          'scroll',
-          handleScroll,
-          { passive: true }
-      )
-    },
-    { immediate: true }
-)
+// watch(
+//     () => route.fullPath,
+//     async () => {
+//       cleanup()
+//       if (route.name !== 'blog') return
+//       await nextTick()
+//       refreshToc()
+//       window.addEventListener(
+//           'scroll',
+//           handleScroll,
+//           { passive: true }
+//       )
+//     },
+//     { immediate: true }
+// )
 
 onUnmounted(cleanup)
 
 defineExpose({
-  refreshToc
+  refreshToc,
+  cleanup,
+  scrollToHeading
 })
 </script>
 

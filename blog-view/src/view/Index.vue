@@ -18,7 +18,7 @@
                       :contentSelector="'.blog-content'"
                       headingSelector="h1, h2, h3"
                       :scrollOffset="80"
-                      v-show="$route.name==='blog'"
+                      v-show="showE"
                   />
                 </div>
               </div>
@@ -51,15 +51,16 @@ import {computed, nextTick, onMounted, ref, watch} from "vue";
 import Footer from "@/components/index/Footer.vue";
 import {getHitokoto, getSite, translateUrl} from "@/api/index.js";
 import {useAppStore} from "@/store";
-import {onBeforeRouteLeave, useRoute} from "vue-router";
+import {useRoute} from "vue-router";
 import Introduction from "@/components/sidebar/Introduction.vue";
 import {storeToRefs} from "pinia";
 import {useScrollToTop} from '@/util/ScrollToTop.js'
 import Tags from "@/components/sidebar/Tags.vue";
 import {getTags} from '@/api/tags'
-import type { ApiResponse} from "@/plugins/axios2";
+import type {ApiResponse} from "@/plugins/axios2";
 import type {Tag} from "@/types/tagType";
 import Toc from "@/components/sidebar/Toc.vue";
+import {useBlogDetailStore} from "@/store/blogDetailStore";
 
 const tags = ref<Tag[]>([])
 const loading = ref(false)
@@ -69,6 +70,8 @@ const {scrollToTop} = useScrollToTop()
 
 const route = useRoute()
 const store = useAppStore()
+const blogDetailStore = useBlogDetailStore()
+const {isBlogRenderCompleted} = storeToRefs(blogDetailStore)
 const {siteInfo} = storeToRefs(store)
 
 const badges = ref([])
@@ -131,20 +134,26 @@ const fetchTags = async () => {
 }
 
 const tocComponent = ref<InstanceType<typeof Toc>|null>(null)
-const initToc = () => {
-  console.log(tocComponent.value)
-  if (tocComponent.value) {
-    setTimeout(() => {
-      tocComponent.value?.refreshToc()
-    }, 100)
-  }
-}
-watch(() => route.fullPath,
-    () => {
-      nextTick()
-      scrollToTop()
-      initToc()
-    },{immediate:true}
+  const showE = ref(false)
+watch(
+    () => isBlogRenderCompleted.value,
+    async (ready) => {
+      showE.value = false
+      const toc = tocComponent.value
+      if (!toc) return
+      if (!ready) {
+        toc.cleanup()
+        return
+      }
+      toc.refreshToc()
+      await nextTick()
+      showE.value = true
+      const hash = route.hash
+      if (hash) {
+        const id = hash.slice(1)
+        toc.scrollToHeading(id)
+      }
+    },
 )
 onMounted(() => {
   site()

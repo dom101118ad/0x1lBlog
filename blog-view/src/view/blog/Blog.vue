@@ -99,17 +99,21 @@ import { ref, onMounted, onUnmounted, nextTick, computed, watch } from 'vue'
 import Tag from '@/components/blogList/Tag.vue'
 import { getBlogById } from '@/api/blog'
 import { formatDate } from "@/util/dateTimeFormatUtils.js"
-import { useRoute } from "vue-router"
+import {onBeforeRouteLeave, onBeforeRouteUpdate, useRoute} from "vue-router"
 import { useAppStore } from "@/store/index.ts"
 import { storeToRefs } from "pinia"
 import Ribbon from "@/components/blogList/Ribbon.vue"
 import PinTop from "@/components/blogList/PinTop.vue"
 import CommentList from "@/components/comments/CommentList.vue"
-
+import {useBlogDetailStore} from "@/store/blogDetailStore.ts";
+import {useScrollToTop} from "@/util/ScrollToTop.js";
+const {scrollToTop} = useScrollToTop()
 const store = useAppStore()
+const blogDetail = useBlogDetailStore()
 const route = useRoute()
 
 const { author } = storeToRefs(store)
+const { isBlogRenderCompleted } = storeToRefs(blogDetail)
 
 const blogId = computed(() => parseInt(route.params.id))
 const blog = ref({})
@@ -160,25 +164,48 @@ const fetchBlog = async () => {
     if (response.code === 200) {
       blog.value = response.data
       playerOptions.value.audio = response.data.musicInfo
+      await nextTick();
+      isBlogRenderCompleted.value = true
+      Prism.highlightAll();
     } else {
-
     }
   } catch (error) {
 
   }
 }
 
-onMounted(async () => {
-  await fetchBlog();
-  playerInstance = init();
-  await nextTick();
+watch(() => route.fullPath,
+    async () => {
+      await fetchBlog();
+      const hash = route.hash
+      if (!hash)
+        scrollToTop()
+    },{immediate:true}
+)
 
-  // Sử dụng highlightAll để highlight tất cả code trong DOM
-  Prism.highlightAll();
-});
-onUnmounted(() => {
+onBeforeRouteLeave(() => {
+  isBlogRenderCompleted.value = false
+  console.log('aaa')
+})
+
+
+onBeforeRouteUpdate(async (to, from) => {
+  if (to.path !== from.path) {
+    await nextTick();
+  }
+})
+function clearPlayer(){
   if(playerInstance)
     playerInstance.destroy()
+}
+onMounted(async () => {
+  clearPlayer()
+  await nextTick()
+  playerInstance = init();
+});
+onUnmounted(() => {
+  clearPlayer()
+  isBlogRenderCompleted.value = false
 })
 </script>
 
