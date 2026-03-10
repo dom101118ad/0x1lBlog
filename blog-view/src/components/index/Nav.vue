@@ -89,12 +89,9 @@ import {fGetCategoryList} from "@/api/category";
 
 const router = useRouter()
 const menu = ref()
-const props = defineProps({
-  blogName: {
-    type: String,
-    required: false
-  }
-})
+const props = defineProps<{
+  blogName: string
+}>()
 const mobileMenuOpen = ref(false);
 const toggle = () => {
   mobileMenuOpen.value = !mobileMenuOpen.value;
