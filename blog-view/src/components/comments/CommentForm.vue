@@ -14,8 +14,8 @@
       </div>
       <div class="flex justify-content-between mx-3">
         <font-awesome-icon icon="face-laugh-squint"  />
-        <div>
-          <span>Thông báo</span>
+        <div class="align-items-center flex gap-2">
+          <span>Thông báo phản hồi</span>
           <ToggleSwitch v-model="commentForm.notice"/>
           <button type="submit" :disabled="commentForm.content.length===0">
             <font-awesome-icon icon="location-arrow" class="mr-2" size="2xl" style="color: #00a6ff; "/>

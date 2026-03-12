@@ -11,7 +11,7 @@
             `toc-level-${item.level}`,
             { 'is-active': activeId === item.id }
           ]"
-            :style="{ paddingLeft: (item.level - 2) * 12 + 'px' }"
+            :style="{ paddingLeft: (item.level - 1) * 9 + 'px' }"
         >
           <a
               :href="`#${item.id}`"
@@ -64,11 +64,10 @@ const flattenedToc = computed(() => {
       }
     })
   }
+
   flatten(toc.value)
   return result
 })
-
-
 function buildHierarchy(headingsList) {
   const root = []
   const stack = []
@@ -87,9 +86,9 @@ function buildHierarchy(headingsList) {
       stack[stack.length - 1].children.push(item)
     stack.push(item)
   })
-
   return root
 }
+
 function hashString(str) {
   let hash = 0
   for (let i = 0; i < str.length; i++) {
@@ -102,6 +101,7 @@ function hashString(str) {
 function generateToc() {
   if (!headings.length) return
   const items = headings.map((heading, index) => {
+    console.log(heading.tagName)
     if (!heading.id)
       heading.id ||= `h-${hashString(heading.innerText+index)}`
     return {
@@ -254,6 +254,8 @@ function refreshToc() {
     headings = Array.from(document.querySelectorAll(selector))
     generateToc()
     if (headings.length) {
+      console.log(headings)
+
       initObserver()
       updateActiveHeading()
       window.addEventListener(

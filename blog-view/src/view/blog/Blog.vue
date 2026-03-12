@@ -153,9 +153,11 @@ const toggleFixed = () => {
     }, 10)
 }
 
-const init = () => {
-  playerOptions.value.container = playerRef.value;
-  return new APlayer(playerOptions.value)
+function initPlayer() {
+  if (!playerRef.value) return
+  clearPlayer()
+  playerOptions.value.container = playerRef.value
+  playerInstance = new APlayer(playerOptions.value)
 }
 
 const fetchBlog = async () => {
@@ -163,8 +165,9 @@ const fetchBlog = async () => {
     const response = await getBlogById(blogId.value)
     if (response.code === 200) {
       blog.value = response.data
-      playerOptions.value.audio = response.data.musicInfo
       await nextTick();
+      playerOptions.value.audio = response.data.musicInfo
+      initPlayer();
       isBlogRenderCompleted.value = true
       Prism.highlightAll();
     } else {
@@ -176,6 +179,7 @@ const fetchBlog = async () => {
 
 watch(() => route.fullPath,
     async () => {
+      clearPlayer()
       await fetchBlog();
       const hash = route.hash
       if (!hash)
@@ -188,21 +192,18 @@ onBeforeRouteLeave(() => {
   console.log('aaa')
 })
 
-
 onBeforeRouteUpdate(async (to, from) => {
   if (to.path !== from.path) {
     await nextTick();
   }
 })
-function clearPlayer(){
-  if(playerInstance)
+function clearPlayer() {
+  if (playerInstance) {
     playerInstance.destroy()
+    playerInstance = null
+  }
 }
-onMounted(async () => {
-  clearPlayer()
-  await nextTick()
-  playerInstance = init();
-});
+
 onUnmounted(() => {
   clearPlayer()
   isBlogRenderCompleted.value = false

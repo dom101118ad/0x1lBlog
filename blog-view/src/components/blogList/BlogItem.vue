@@ -47,7 +47,7 @@
           <Ribbon :category="blog?.category"/>
           <div class="px-3 py-2">
             <!-- Mô tả bài viết -->
-            <div class="m-padded-tb-small m-markdown typo " v-html="blog.description"></div>
+            <div class="m-padded-tb-small line-numbers match-braces rainbow-braces typo " v-html="blog.description"></div>
 
             <!-- Nút đọc toàn bộ -->
             <div class="col-12">
