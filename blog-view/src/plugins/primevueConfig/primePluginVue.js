@@ -28,6 +28,7 @@ import Skeleton from 'primevue/skeleton'
 import Image from 'primevue/image'
 import Divider from 'primevue/divider'
 import Menubar from 'primevue/menubar'
+import Menu from 'primevue/menu'
 import InputText from 'primevue/inputtext'
 import Button from 'primevue/button'
 import Badge from "primevue/badge"
@@ -80,6 +81,7 @@ const PrimeVuePlugin = {
             'Divider': Divider,
             'Menubar': Menubar,
             'Card': Card,
+            'Menu': Menu,
             'AccordionPanel': AccordionPanel,
             'ToggleSwitch': ToggleSwitch,
             'Form': Form,

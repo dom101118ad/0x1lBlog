@@ -18,9 +18,12 @@
               <div class="comment-header">
                 <a class="nickname" :href="cm.website?.trim() || '#'"
                    target="_blank" rel="external nofollow noopener">{{cm.nickname}}</a>
-                <div class="metadata">
+                <span class="owner-tag" :style="{background:  '#fa2745'}"
+                      v-if="cm.adminComment">
+                  {{siteInfo.commentAdminFlag}}</span>
+                <span class="metadata">
                   {{ ` ${formatDate(cm.createTime,'YYYY-MM-DD HH:mm')}`}}
-                </div>
+                </span>
                 <span class="replying" :style="{background: replyCmId ===cm.id? '#fa2745' : '#48a5ff'}"
                       @click="setReplyComment(cm.threadRoot,cm.id,cm.nickname)">
                   {{replyCmId ===cm.id ? 'Hủy': 'Trả lời'}}</span>
@@ -44,6 +47,7 @@
                   <div class="comment-header">
                     <a class="nickname"  :href="cm.website?.trim() || '#'"
                           target="_blank" rel="external nofollow noopener">{{replyCm.nickname}}</a>
+                    <span class="owner-tag" v-if="replyCm.adminComment">{{siteInfo.commentAdminFlag}}</span>
                     <div class="metadata">
                       {{ ` ${formatDate(replyCm.createTime,'YYYY-MM-DD HH:mm')}`}}
                     </div>
@@ -73,8 +77,12 @@ import {ref, watch} from "vue";
 import {useCommentStore} from "@/store/commentStore";
 import {storeToRefs} from "pinia";
 import CommentInfoUser from "@/components/comments/CommentInfoUser.vue";
+import {useAppStore} from "@/store";
 
 const commentStore = useCommentStore()
+const store = useAppStore()
+
+const {siteInfo} = storeToRefs(store)
 const {comments,threadRoot,commentStats,commentForm} = storeToRefs(commentStore)
 
 const commentRefs = ref<Record<any,any>>({})
@@ -161,21 +169,57 @@ watch(()=> comments.value , () =>{
 }
 
 .comment-header{
+  display: flex;
+  align-items: center;
+  gap: .75rem;
   margin-bottom: 2px;
 }
 .nickname{
-  font-weight: 600;
   font-size: 1.1rem;
-  margin-bottom: 5px  ;
+  font-weight: bolder;
+  color: rgba(0,0,0,.87);
+  text-decoration: none;
 }
 .metadata {
   font-weight: 700;
-  display: inline-block;
-  margin-left: .5em;
   color: rgba(0, 0, 0, 0.51);
   font-size: 1em;
 }
-
+.owner-tag{
+  cursor: default;
+  padding: 4px 5px !important;
+  font-weight: 500 !important;
+  font-size: .85714286rem;
+  position: relative;
+  background-color: #1b1c1d !important;
+  border-color: #1b1c1d !important;
+  color: #fff !important;
+  border-radius: 3px;
+}
+.owner-tag:before{
+  position: absolute;
+  content: '';
+  background: #1b1c1d ;
+  z-index: 2;
+  width: .6666em;
+  height: .6666em;
+  transition: background .1s ease;
+  border-width: 0 0 1px 1px;
+  -webkit-transform: translateX(-50%) translateY(-50%) rotate(45deg);
+  transform: translateX(-50%) translateY(-50%) rotate(45deg);
+  bottom: auto;
+  right: auto;
+  top: 50%;
+  left: 0;
+}
+.replying{
+  padding: 4px 5px;
+  color: #FFF;
+  font-size: 12px;
+  border-radius: 3px;
+  cursor: pointer;
+  //margin-left: auto
+}
 .comment-reply{
   margin-left: 4.57rem  ;
 }
@@ -183,13 +227,7 @@ watch(()=> comments.value , () =>{
   background: #8fede8;
 }
 
-.replying{
-  margin-left: 5px; padding: 4px 5px;
-  color: #FFF;
-  font-size: 12px;
-  border-radius: 3px;
-  cursor: pointer;
-}
+
 .avt-l{
   position: relative;
 }

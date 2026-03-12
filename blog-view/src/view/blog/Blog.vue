@@ -47,7 +47,10 @@
             </button>
             <div v-if="blog.musicInfo" ref="playerRef"/>
             <!-- Mô tả bài viết -->
-            <div class="typo m-padded-tb-small px-3 line-numbers match-braces rainbow-braces" v-html="blog.content"></div>
+            <div class="typo m-padded-tb-small px-3 blog-content
+            line-numbers match-braces rainbow-braces"
+                 v-lazy-container="{ selector: 'img' }"
+                 v-html="blog.content"></div>
             <!-- Divider -->
             <div class="col-12">
               <div class="border-top-1 surface-border my-2"></div>
@@ -94,21 +97,30 @@
 <script setup>
 import APlayer from 'aplayer'
 import 'aplayer/dist/APlayer.min.css'
-import {ref, onMounted, onUnmounted ,nextTick, computed, watch} from 'vue'
+import { ref, onMounted, onUnmounted, nextTick, computed, watch } from 'vue'
 import Tag from '@/components/blogList/Tag.vue'
 import { getBlogById } from '@/api/blog'
-import { formatDate } from "@/util/dateTimeFormatUtils.js";
-import {useRoute} from "vue-router";
-import {useAppStore} from "@/store/index.ts";
-import {storeToRefs} from "pinia";
-import Ribbon from "@/components/blogList/Ribbon.vue";
-import PinTop from "@/components/blogList/PinTop.vue";
-import CommentList from "@/components/comments/CommentList.vue";
+import { formatDate } from "@/util/dateTimeFormatUtils.js"
+import {onBeforeRouteLeave, onBeforeRouteUpdate, useRoute} from "vue-router"
+import { useAppStore } from "@/store/index.ts"
+import { storeToRefs } from "pinia"
+import Ribbon from "@/components/blogList/Ribbon.vue"
+import PinTop from "@/components/blogList/PinTop.vue"
+import CommentList from "@/components/comments/CommentList.vue"
+import {useBlogDetailStore} from "@/store/blogDetailStore.ts";
+import {useScrollToTop} from "@/util/ScrollToTop.js";
 
+import mediumZoom from "medium-zoom"
+let zoom
+
+
+const {scrollToTop} = useScrollToTop()
 const store = useAppStore()
+const blogDetail = useBlogDetailStore()
 const route = useRoute()
 
-const {author} = storeToRefs(store)
+const { author } = storeToRefs(store)
+const { isBlogRenderCompleted } = storeToRefs(blogDetail)
 
 const blogId = computed(() => parseInt(route.params.id))
 const blog = ref({})
@@ -148,9 +160,11 @@ const toggleFixed = () => {
     }, 10)
 }
 
-const init = () => {
-  playerOptions.value.container = playerRef.value;
-  return new APlayer(playerOptions.value)
+function initPlayer() {
+  if (!playerRef.value) return
+  clearPlayer()
+  playerOptions.value.container = playerRef.value
+  playerInstance = new APlayer(playerOptions.value)
 }
 
 const fetchBlog = async () => {
@@ -158,34 +172,66 @@ const fetchBlog = async () => {
     const response = await getBlogById(blogId.value)
     if (response.code === 200) {
       blog.value = response.data
+      await nextTick();
       playerOptions.value.audio = response.data.musicInfo
+      initPlayer();
+      isBlogRenderCompleted.value = true
+      zoom?.detach()
+      initZoom()
+      Prism.highlightAll();
     } else {
-
     }
   } catch (error) {
 
   }
 }
 
+watch(() => route.fullPath,
+    async () => {
+      clearPlayer()
+      await fetchBlog();
+      const hash = route.hash
+      if (!hash)
+        scrollToTop()
+    },{immediate:true}
+)
 
-// ========== IMPORT THEME ==========
+onBeforeRouteLeave(() => {
+  isBlogRenderCompleted.value = false
+  console.log('aaa')
+})
+
+onBeforeRouteUpdate(async (to, from) => {
+  if (to.path !== from.path) {
+    await nextTick();
+  }
+})
+function clearPlayer() {
+  if (playerInstance) {
+    playerInstance.destroy()
+    playerInstance = null
+  }
+}
+
+const initZoom = () => {
+  zoom = mediumZoom(".typo img", {
+    margin: 24,
+    background: "#000"
+  })
+}
 
 onMounted(async () => {
-  await fetchBlog();
-  playerInstance = init();
-  await nextTick();
-
-  // Sử dụng highlightAll để highlight tất cả code trong DOM
-  Prism.highlightAll();
-});
+  await nextTick()
+  initZoom()
+})
 onUnmounted(() => {
-  if(playerInstance)
-    playerInstance.destroy()
+  clearPlayer()
+  isBlogRenderCompleted.value = false
 })
 </script>
 
 <style scoped>
-.comment-container{
+.comment-container {
   margin-top: -1px;
   padding: 0 15px;
   background: #fff;
@@ -215,21 +261,21 @@ onUnmounted(() => {
   opacity: 0.7;
   text-decoration: none;
 }
-.blog-container{
+.blog-container {
   padding-left: 1.5rem;
   padding-right: 1.5rem;
 }
 @media (max-width: 768px) {
-  .blog-container{
+  .blog-container {
     padding-right: max((100vw - 421px)/25, 0px) !important;
     padding-left: max((100vw - 421px)/25, 0px) !important;
   }
-  .comment-container{
+  .comment-container {
     padding-right: max((100vw - 421px)/25, 2px) !important;
     padding-left: max((100vw - 421px)/25, 2px) !important;
   }
 }
-.header{
+.header {
   border: none;
   margin: 0 1rem;
   top: 13px;

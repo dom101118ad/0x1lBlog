@@ -287,7 +287,7 @@ const deleteComment = async (id) => {
 }
 
 const getAvatarUrl = (avatar) => {
-  return new URL(`/src/assets/img/comment-avatar/${avatar}`, import.meta.url).href
+  return `/img/comment-avatar/${avatar}`
 }
 onMounted(async ()=> {
   await getCommentList()

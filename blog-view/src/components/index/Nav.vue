@@ -8,32 +8,41 @@
                   style="margin: 0; padding: 0.900007143em ;font-size: 1.28571429rem;">{{ blogName }}
               </h3>
             </router-link>
-            <router-link :class="mobileMenuOpen? 'm-mobile-show':'m-mobile-hide', $route.name==='home'?'active':''"
+            <router-link :class="[mobileMenuOpen? 'm-mobile-show':'m-mobile-hide',
+            $route.name==='home'?'active':'']"
                 class=" nav-line  no-underline p-3
                 t-m-bold transition-colors
                 transition-duration-200" to="/home">
               <font-awesome-icon icon="home" class="mr-2" />Trang chủ
             </router-link>
-            <router-link :class="mobileMenuOpen? 'm-mobile-show':'m-mobile-hide',
-                $route.name===''?'active':'' "
-                class=" nav-line no-underline t-m-bold
-                 transition-colors transition-duration-200 p-3" to="">
-              <font-awesome-icon icon="lightbulb" class="mr-2" />Phân loại
-            </router-link>
-          <router-link :class="mobileMenuOpen? 'm-mobile-show':'m-mobile-hide',
-              $route.name==='archives'?'active':''"
+          <div @click="toggleMenu"
+              :class="[mobileMenuOpen ? 'm-mobile-show' : 'm-mobile-hide',
+                $route.name === 'category' ? 'active' : '',
+                'nav-line no-underline t-m-bold transition-colors transition-duration-200 p-3 cursor-pointer'
+              ]"
+          >
+              <font-awesome-icon icon="lightbulb" class="mr-2"/>
+              Thể loai
+              <Menu ref="menu" :model="categoryItems"
+                    :pt="{root: { class: 'custom-menu-nav' }}"
+                      @mouseleave="menu?.hide()"
+                    :popup="true"  />
+              <i class="pi pi-angle-down ml-1"/>
+          </div>
+          <router-link :class="[mobileMenuOpen? 'm-mobile-show':'m-mobile-hide',
+              $route.name==='archives'?'active':'']"
                        class=" nav-line  no-underline t-m-bold
                   transition-colors transition-duration-200 p-3" to="/archives">
             <font-awesome-icon icon="archive" class="mr-2 pi" />Lưu trữ
           </router-link>
-            <router-link :class="mobileMenuOpen? 'm-mobile-show':'m-mobile-hide',
-                $route.name===''?'active':''"
+            <router-link :class="[mobileMenuOpen? 'm-mobile-show':'m-mobile-hide',
+                $route.name==='moment'?'active':'']"
                 class=" nav-line  no-underline t-m-bold
                  transition-colors transition-duration-200 p-3" to="">
-              <font-awesome-icon icon="tag" class="mr-2" />Tag
+              <font-awesome-icon icon="comment-dots" class="mr-2" />Khoảng khắc
             </router-link>
-            <router-link :class="mobileMenuOpen? 'm-mobile-show':'m-mobile-hide',
-               $route.name===''?'active':''"
+            <router-link :class="[mobileMenuOpen? 'm-mobile-show':'m-mobile-hide',
+               $route.name==='about'?'active':'']"
                 class=" nav-line no-underline t-m-bold
                 transition-colors transition-duration-200 p-3" to="">
               <font-awesome-icon icon="info-circle" class="mr-2" />Về tôi
@@ -69,25 +78,63 @@
   </div>
 </template>
 
-<script setup>
-import { ref} from 'vue'
-import { defineProps } from 'vue'
-const props = defineProps({
-  blogName: {
-    type: String,
-    required: false
-  }
-})
+<script setup lang="ts">
+import {computed, onMounted, ref} from 'vue'
+import {useRouter} from "vue-router";
+import type {Category} from "@/types/categoryType.ts";
+import type {ApiResponse} from "@/plugins/axios2";
+import {fGetCategoryList} from "@/api/category";
+
+
+const router = useRouter()
+const menu = ref()
+const props = defineProps<{
+  blogName: string
+}>()
 const mobileMenuOpen = ref(false);
 const toggle = () => {
   mobileMenuOpen.value = !mobileMenuOpen.value;
 };
-document.addEventListener('click', (e) => {
+document.addEventListener('click', (e: Event) => {
   const el = document.getElementById('navR')
-  if(!el.contains(e.target))
+  const target = e.target as Node
+  if(!el?.contains(target))
     mobileMenuOpen.value=false;
 })
 
+const toggleMenu = (event: any) => {
+  menu.value.toggle(event)
+}
+const categoryList = ref<Category[]>([])
+const categoryRoute = (name: string) => {
+  router.push({
+    name: "category",
+    params: { name }
+  })
+}
+const categoryItems = computed(() =>
+    categoryList.value.map(category => ({
+      label: category.name,
+      command: () => categoryRoute(category.name)
+    }))
+)
+
+const getCategoryList = async () => {
+  try{
+    const res: ApiResponse<Category[]> = await fGetCategoryList();
+    if(res.code === 200){
+      console.log('success')
+      categoryList.value = res.data
+    }
+
+  }catch (e){
+    console.log('error')
+  }
+}
+
+onMounted(() => {
+  getCategoryList()
+})
 </script>
 
 <style scoped>
@@ -162,7 +209,6 @@ document.addEventListener('click', (e) => {
     left: 0;
     width: 100%;
     height: 1px;
-
   }
   .flex-nav{
     display: flex; flex-direction: column;

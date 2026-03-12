@@ -1,6 +1,7 @@
 html,
 body,
 #app {
+
   font-size: 14px;
   height: 100%;
   margin: 0;
@@ -11,6 +12,11 @@ body,
   background-position: left top;
   background-repeat: no-repeat;
   font-family: Lato, 'Helvetica Neue', Arial, Helvetica, sans-serif;
+}
+
+h1,h2, h3, h4,a {
+  /*scroll-behavior: smooth;*/
+  /*scroll-margin-top: 80px;*/
 }
 .text-base-c{
   font-family: Lato, 'Helvetica Neue', Arial, Helvetica, sans-serif;
@@ -407,4 +413,16 @@ footer {
     display: block;
     margin-bottom: 1rem;
   }
+}
+
+/*custom menu primevue*/
+.custom-menu-nav{
+  background-color: rgba(27, 28, 29, 0.95) !important;
+  border: none !important;
+}
+.custom-menu-nav .p-menu-item-content{
+  color: rgba(255, 255, 255, 0.8) !important;
+}
+.custom-menu-nav .p-menu-item-content:hover {
+  background: #505050!important; !important;
 }

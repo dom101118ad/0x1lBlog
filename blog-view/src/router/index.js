@@ -6,6 +6,7 @@ import {useAppStore} from "@/store/index.ts";
 import Archives from "@/view/archives/Archives.vue";
 import Blog from "@/view/blog/Blog.vue";
 import Tag from "@/view/tag/Tag.vue";
+import Moment from "@/view/moments/Moment.vue";
 
 const routes = [
     {
@@ -51,7 +52,21 @@ const routes = [
                 meta: {
                     title: 'Tag'
                 }
-            }
+            },
+            {
+                path: '/category/:name',
+                name: 'category',
+                component: () => import('@/view/category/Category.vue'),
+                meta: {title: 'Thể loại'}
+            },
+            {
+                path: '/moments',
+                name: 'moments',
+                component: Moment,
+                meta: {
+                    title: 'Khoảng khắc'
+                }
+            },
         ]
     },
 ]

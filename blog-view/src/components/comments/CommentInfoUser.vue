@@ -1,7 +1,7 @@
 <template>
   <div class="comment-form-container">
     <div  >
-      <div  class="flex justify-content-evenly flex-wrap align-items-center">
+      <div  class="flex justify-content-evenly mx-3 gap-3 flex-wrap align-items-center">
         <div  class="input-wrapper">
             <font-awesome-icon icon="user"  />
             <InputText ref="inputNickname"
@@ -101,24 +101,15 @@ const resolver = ref(zodResolver(commentSchema));
 </script>
 <style scoped>
 .comment-form-container{
-  background: #c6f4ef;
+  background: rgba(113, 111, 111, 0.22);
   border: none;
   margin-top: -1px;
-  margin-bottom: 2px;
   font-size: 1em;
   line-height: 1.4285em;
   min-height: 1em;
   position: relative;
-
+  margin-bottom: 1rem;
 }
-.form-container{
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-
-}
-
 
 :deep(.p-inputtext),
 :deep(.p-textarea){
@@ -129,13 +120,12 @@ const resolver = ref(zodResolver(commentSchema));
 
 .input-wrapper{
   border-bottom: #505050 1px solid;
-  margin-left: 1rem;
   position: relative;
-
+  flex: 1;
 }
 :deep(.p-inputtext){
   border: none;
-  width: 90%;
+  width: 80%;
 }
 
 </style>
