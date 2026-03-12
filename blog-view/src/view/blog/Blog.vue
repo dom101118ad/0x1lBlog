@@ -48,7 +48,9 @@
             <div v-if="blog.musicInfo" ref="playerRef"/>
             <!-- Mô tả bài viết -->
             <div class="typo m-padded-tb-small px-3 blog-content
-            line-numbers match-braces rainbow-braces" v-html="blog.content"></div>
+            line-numbers match-braces rainbow-braces"
+                 v-lazy-container="{ selector: 'img' }"
+                 v-html="blog.content"></div>
             <!-- Divider -->
             <div class="col-12">
               <div class="border-top-1 surface-border my-2"></div>
@@ -107,6 +109,11 @@ import PinTop from "@/components/blogList/PinTop.vue"
 import CommentList from "@/components/comments/CommentList.vue"
 import {useBlogDetailStore} from "@/store/blogDetailStore.ts";
 import {useScrollToTop} from "@/util/ScrollToTop.js";
+
+import mediumZoom from "medium-zoom"
+let zoom
+
+
 const {scrollToTop} = useScrollToTop()
 const store = useAppStore()
 const blogDetail = useBlogDetailStore()
@@ -169,6 +176,8 @@ const fetchBlog = async () => {
       playerOptions.value.audio = response.data.musicInfo
       initPlayer();
       isBlogRenderCompleted.value = true
+      zoom?.detach()
+      initZoom()
       Prism.highlightAll();
     } else {
     }
@@ -204,6 +213,17 @@ function clearPlayer() {
   }
 }
 
+const initZoom = () => {
+  zoom = mediumZoom(".typo img", {
+    margin: 24,
+    background: "#000"
+  })
+}
+
+onMounted(async () => {
+  await nextTick()
+  initZoom()
+})
 onUnmounted(() => {
   clearPlayer()
   isBlogRenderCompleted.value = false
